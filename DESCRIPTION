@@ -1,0 +1,15 @@
+Package: StatsTrendAnalysis
+Title: Statistical Trend Analysis on time series
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Valentin",
+           family = "Mansanarez",
+           role = c("aut", "cre"),
+           email = "valentin.mansanarez@inrae.fr")
+Description: Read, preprocess and extract variable(s) from time series data. Then perform statistical trend analysis on the extracted variables.
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
