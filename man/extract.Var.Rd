@@ -5,16 +5,24 @@
 \title{Extration of variable from a time serie}
 \usage{
 extract.Var(
-  data.station,
+  data.station = NULL,
+  data.group = NULL,
+  data.values = NULL,
   funct = max,
   timestep = "year",
   period = NULL,
   per.start = "01-01",
+  pos.datetime = NA,
   ...
 )
 }
 \arguments{
-\item{data.station}{data object from the StatTrendAnalysis package, data from which to extract the variable of interest.}
+\item{data.station}{data object from the StatAnalysisTrend package, data from which to extract the variable of interest.
+If provided, take over argument 'data.group' and 'data.values'.}
+
+\item{data.group}{data.frame or tbl, group(s) to consider in the extraction.}
+
+\item{data.values}{vector or dataframe/tbl of 1 column, values associated with the provided groups in argument'data.group".}
 
 \item{funct}{function, function to apply for extracting the variable from the value of the time serie.}
 
@@ -30,7 +38,9 @@ Any other value for this argument will return an error message.}
 Imposed date format is "YYYY-mm-dd". Default option (period = NULL) is to considered all the
 periods avalailable in the data.}
 
-\item{per.start}{character, allow to index years/months accotdingly to per.start (default: "01-01")}
+\item{per.start}{character, allow to index years/months accotdingly to per.start (default: "01-01").}
+
+\item{pos.datetime}{integer, column number of the Date object in the provided groups. NA by default: No group of date provided.}
 
 \item{...}{arguments needed for the function provided through the argument "funct".}
 }
@@ -41,6 +51,10 @@ the data grouped by file;; info, a data.tibble with the file and matching groups
 \description{
 A specific variable is extracted from the data accordingly
 to a provided classification of groups.
+}
+\details{
+If there is a group of Date, argument 'pos.datetime" needs to be provided.
+If not, it is assume that there are no Date object in the provided groups.
 }
 \examples{
 extract.Var(data.station=data)

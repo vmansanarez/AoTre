@@ -12,10 +12,12 @@
 #' GeneralMannKendall.wrap(X=data.Var$value)
 #' @export
 GeneralMannKendall.wrap=function(X,level=0.1,dep.option='INDE',DoDetrending=TRUE){
+  ### Assume that the package BFunk is installed on the machine
+  require(BFunk)
   ### Apply the Mann Kendall test on vector X
-  res.test=GeneralMannKendall(X = X,level=level,dep.option=dep.option,DoDetrending=DoDetrending)
-  ### Results to be returned
-  data.tmp=data.frame(H=res.test$H,p=res.test$P,stat=res.test$STAT,trend=res.test$TREND,dep=res.test$DEP)
+  res.test=generalMannKendall(X = X,level=level,dep.option=dep.option,DoDetrending=DoDetrending)
+  ### Results to be returned, remove H and Dep as can be computed back from p, the p-value
+  data.tmp=data.frame(p=res.test$P,stat=res.test$STAT,trend=res.test$TREND)
   return(list(data.tmp))
 }
 
@@ -36,19 +38,29 @@ Estimate.stats=function(data.extract
                         ,funct.stat=GeneralMannKendall.wrap
                         ,list.stats=NULL
                         ,...){
+  require(dplyr)
   ### [WARNING]: aggregation to be modified to account for more groups
   ### Aggregation of function 'funct.stat' on data value column from data.extract.
-  data.Y.extract=aggregate.data.frame(x=data.extract$value,
-                                      by = list(group=data.extract$group),
-                                      FUN = funct.stat,...)
+  if("datetime" %in% colnames(data.extract)){
+    ### Data already agregated by Date in the previous step (extraction of variable)
+    group.names=setdiff(colnames(data.extract),c("datetime","values"))
+  }else{
+    group.names=setdiff(colnames(data.extract),"values")
+  }
+  ### Group data accordingly to group.names
+  data.Y.extract=group_by_at(.tbl=data.extract,.vars = group.names)
+
+  ### Aggregate function 'funst.stat' on each group of data.Y.extract
+  data.extract.fin=summarise_each(tbl = select(data.Y.extract,c(group.names,"values")),funs = funct.stat)
+  ### catch names of the results from funct.stat
+  colnames.funct=colnames(data.extract.fin$values[[1]])
+
   ### Create data.frame for the returned results
-  data.final=cbind.data.frame(group=data.Y.extract$group,
-                              as.data.frame(t(matrix(unlist(data.Y.extract$x,use.names = TRUE),nrow=5))))
+  data.final=cbind.data.frame(group=select(data.extract.fin,group.names),
+                              as.data.frame(t(matrix(unlist(data.extract.fin$values,use.names = TRUE)
+                                                     ,nrow=length(data.extract.fin$values[[1]])))))
 
-  colnames(data.final)=c("group","H","p","stat","trend","dep")
-
-  ### Code line to be [2VERIFIED]. Seems specific to Mann-kendall function
-  data.final=data.final[,-c(2,6)]
+  colnames(data.final)=c(group.names,colnames.funct)
 
   if(!is.null(list.stats)){
     data.final$station=list.stats

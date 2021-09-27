@@ -73,7 +73,10 @@ FDC_lowvol=function(x){
 #' @title Extration of variable from a time serie
 #' @description A specific variable is extracted from the data accordingly
 #'              to a provided classification of groups.
-#' @param data.station data object from the StatTrendAnalysis package, data from which to extract the variable of interest.
+#' @param data.station data object from the StatAnalysisTrend package, data from which to extract the variable of interest.
+#'        If provided, take over argument 'data.group' and 'data.values'.
+#' @param data.group data.frame or tbl, group(s) to consider in the extraction.
+#' @param data.values vector or dataframe/tbl of 1 column, values associated with the provided groups in argument'data.group".
 #' @param funct function, function to apply for extracting the variable from the value of the time serie.
 #' @param timestep character, option on the type of aggregation on time to perform. Available:
 #' \enumerate{
@@ -85,44 +88,110 @@ FDC_lowvol=function(x){
 #' @param period vector of character, date of start and of end of the period to considered in the data.
 #'        Imposed date format is "YYYY-mm-dd". Default option (period = NULL) is to considered all the
 #'        periods avalailable in the data.
-#' @param per.start character, allow to index years/months accotdingly to per.start (default: "01-01")
+#' @param per.start character, allow to index years/months accotdingly to per.start (default: "01-01").
+#' @param pos.datetime integer, column number of the Date object in the provided groups. NA by default: No group of date provided.
 #' @param ... arguments needed for the function provided through the argument "funct".
 #' @return a list of two objects (data, a unique data.tibble containing all
 #' the data grouped by file;; info, a data.tibble with the file and matching groups)
+#' @details If there is a group of Date, argument 'pos.datetime" needs to be provided.
+#'        If not, it is assume that there are no Date object in the provided groups.
 #' @examples
 #' extract.Var(data.station=data)
 #' extract.Var(data.station=data,funct=min)
 #' extract.Var(data.station=data,funct=FDC_lowvol,period=c("1965-01-01","2020-01-01"))
 #' extract.Var(data.station=data,funct=f_FDC_x,probs.FDC=0.15)
 #' @export
-extract.Var=function(data.station
-                     ,funct=max
-                     ,timestep="year"
-                     ,period=NULL
+extract.Var=function(data.station = NULL ## data already prepared. Assumed: last column is the value and previous ones are the groups
+                     ,data.group = NULL ## Data with the different groups
+                     ,data.values = NULL ## Data with the corresponding values for each groups (hyp. Same index)
+                     ,funct=max,timestep="year",period=NULL
                      ,per.start="01-01"
+                     ### settings if working with datetime
+                     ,pos.datetime=NA
                      ,...){
 
   require(dplyr)
   require(lubridate)
 
+  ############################################
+  ############################################
+  ############################################
   ### Check argument data.station
+  # WORK IN PROGRESS
+  ############################################
+  # Either data already joined or provid, group and value separately
 
-  # [EVOL]
-  data.all=data.station$data
+  if(is.null(data.group) && is.null(data.values)){
+    if(is.null(data.station)){
+      stop("ARGUMENT ERROR:'extract.Var': No data provided")
+    }else{
+      ### Data are already prepared
+      data.all=data.station$data
+      n.group=ncol(data.all)-1
+      if(is.na(pos.datetime)){
+        ### No Date object in the group
+        colnames(data.all)=c(paste0("group",1:n.group),"values")
+      }else{
+        ### One of the group is Dates, will be called date
+        if(n.group==1){
+          ### Special case: only one group and it is date
+          colnames(data.all)=c("datetime","values")
+        }else{
+          ### More than one group
+          vec.name=rep("",n.group)
+          vec.name[pos.datetime]="datetime"
+          vec.name[-pos.datetime]=paste0("group",1:(n.group-1))
+          colnames(data.all)=c(vec.name,"values")
+        }
+      }
+    }
+  }else if (is.null(data.group) && !is.null(data.values)){
+    stop("ARGUMENT ERROR:'extract.Var': Missing groups!")
+  }else if (!is.null(data.group) && is.null(data.values)){
+    stop("ARGUMENT ERROR:'extract.Var': Missing values!")
+  }else{
+    ### group and values were provided
+    if(nrow(data.group)!=nrow(data.values)){
+      stop("ARGUMENT ERROR:'extract.Var': different number of row in inputs!")
+    }
+    if(!is.tbl(data.group)){
+      ## group.d is data.frame, combining with val will give a data.frame
+      tmp.dataframe=bind_cols(data.group,data.values)
+      data.all=tibble(tmp.dataframe)
+      rm(tmp.dataframe) ### remove the tmp object from memory
+    }else{
+      data.all=bind_cols(data.group,data.values)
+    }
+    if(!is.na(pos.datetime)){
+      ### No date object in the group
+      colnames(data.all)=c(paste0("group",1:ncol(data.group)),"values")
+    }else{
+      # a datetime object was provided in the group at position 'pos.datetime",
+      # change column name to "datetime"
+      n.group=ncol(data.group)
+      vec.name=rep("",n.group)
+      vec.name[pos.datetime]="datetime"
+      vec.name[-pos.datetime]=paste0("group",1:(n.group-1))
+      colnames(data.all)=c(vec.name,"values")
+    }
+
+  }
 
   ############################################
   ### Select period
   if(is.null(period)){
-    ### Nothing to do, whole period is considerated
+    ### Nothing to do, whole period is considered
   }else{
     ### Check validity of period argument: vector of 2 character, format = "YYYY-mm-dd"
     # To be done
 
-    ### Grouped the data by date and station
-    data.all.tmp.grouped = data.all %>% group_by(group)
+    ### Grouped the data by all columns that are factor, id est the "group" columns
+    data.all.tmp.grouped = data.all %>% group_by(across(where(is.factor)))
 
     ### Filter data: only the wanted period is kept
     # data.all.sel.group = filter(.data = data.all.tmp.grouped, datetime > period[1] & datetime < period[2])
+
+
 
     data.all.sel.group = filter(.data = data.all.tmp.grouped, datetime  <= period[2])
 
@@ -195,13 +264,16 @@ extract.Var=function(data.station
     }
 
   }else if(timestep=="Station"){
-    ### Only grouping by stations
-    data.all$datetime=factor(rep(1,nrow(data.all)))
-    data.all.grTime=select(data.all,datetime,value,group)
+    ### Only grouping by stations: n.group==1
+    n.group=ncol(data.all)-1
+    if(n.group==1){
+      data.all.grTime=data.all
+    }else{
+      stop("extract.Var: error with option 'Station' of argument 'timestep': only one group needed in data.")
+    }
   }else if(timestep=="None"){
-    ### No grouping by date
-    data.all$datetime=factor(rep(1:nrow(data.all)))
-    data.all.grTime=select(data.all,datetime,value,group)
+    ### No grouping
+    data.all.grTime=select(data.all,values)
   }else{
     stop("extract.Var: wrong timestep argument value")
   }
@@ -218,10 +290,11 @@ extract.Var=function(data.station
   # days.need=as.integer((1-percent.missing)*365.25)
   #
   # data.count.step4=filter(.data = data.count.step3,n>=days.need)
-  #
+  ## [To be done]
 
-  ### Group data
-  data.extract.step1= group_by(.data=data.all.grTime,datetime,group)
+  ### Group data by all columns except column of values (setdiff function remove the column 'values' from
+  # the list of names of the columns to group)
+  data.extract.step1= group_by_at(.tbl=data.all.grTime,.vars = setdiff(names(data.all.grTime), "values"))
 
   ### Apply function of interest
   data.extract=summarise_all(.tbl = data.extract.step1,.funs = funct,...)
