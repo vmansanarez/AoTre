@@ -1,12 +1,35 @@
 
 
 ######################################################################
-##### Function returning a map of the data in France
-
-#'@param data.plot data.frame, resultas/data to be plotted.
-#'@param size.point vector of integer, size of the point representing the result at the station,
-#' first number for non significant results, seconf number for significant result
-#'@param alpha.test significant level used in the Mann-Kendall test realized and matching with the results from the data
+#' @title MAP results
+#' @description Function returning a map of the data in a specific region accordingly to the result of
+#'              a statistic. Each group is represented as a point fill by the result of the statistic of the test
+#'              and sized accordingly to the significativity of the test.
+#' @param data.plot dtbl, data tibble of the resultats to be plotted.
+#' @param data.colnames.settings vector of characters, names of the columns containing, in that order,
+#'        coordinates X and Y of the station, the group representing the station indexation, the pvalue
+#'         and the statistic at the station (data.colnames.settings = c("X_L2E","Y_L2E","group","p","stat")
+#'         by default).
+#' @param size.point vector of integer, size of the point representing the result at the station,
+#'        first number for non significant results, seconf number for significant result (size.point = c(0.8,1)
+#'        by default).
+#' @param alpha.test real, significant level used in the Mann-Kendall test realized and matching with the results
+#'        from the data (alpha.test = 0.05 by default);
+#' @param region.box character, Region to zoom in the final plot (default: "France").
+#' @param crs.coords.sf character, projection system of the coordinates (default: "EPSG:27572").
+#' @param agr.coords.sf character, attribute-geometry-relationship (default: "constant"). See documentation of
+#'        the function sf::st_sf() for more information on it.
+#' @param color.fill.low character, color of the lower bound of the statistic (default: "#053061", for red color).
+#' @param color.fill.middle character, color of the middle of the statistic (default: "#f7f7f7", for white color).
+#' @param color.fill.high character, color of the higher bound of the statistic (default: "#67001f", for blue color).
+#' @param color.fill.midpoint real, value corresponding to the middle of the statistic (default: "#67001f", for blue color).
+#' @param color.fill.lim vector of real, values of the lower and the higher bounds of the statistic (default: c(-4,4)).
+#'        In case a value of the statistic is outside the bounds, it will take the color of the closest bound.
+#' @param color.fill.na_Value character, color of the NA values (default: "green").
+#' @param title.size character, title of the legend associated with the size of the points
+#' @param title.fill character, title of the legend associated with the fill of the points.
+#' @param axis.size.text, integer, size of the text in the axis of the plot (default: 25).
+#'
 #' @return a ggplot object
 #' @examples
 #' plot_map(data.plot=data2bePlotted)
@@ -14,8 +37,8 @@
 #' plot_map(data.plot=datapath,size.point=c(1,2),alpha.test=0.32)
 #' @export
 plot_map=function(data.plot,
-                  ### colnames of X coords, Y coords, and station group
-                  data.colnames.settings=c("X_L2E","Y_L2E","group","p"),
+                  ### colnames of X coords, Y coords, group (station), pvalue and stat
+                  data.colnames.settings=c("X_L2E","Y_L2E","group","p","stat"),
                   ### size points
                   size.point=c(0.8,1),
                   ### significance level alpha
@@ -33,7 +56,7 @@ plot_map=function(data.plot,
                   color.fill.na_Value="green",
                   #### Legend
                   title.size = "Significant?",
-                  title.fill = "Value",
+                  title.fill = "Statistic",
                   #### Setting plot
                   axis.size.text=25
                   ){

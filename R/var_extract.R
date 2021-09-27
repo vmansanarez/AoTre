@@ -1,11 +1,13 @@
 
 ######################################################################
-##### Function to compute the Flow Duration Curve at a specific occurrence probability
-##
-
-#'@param x a vector of real, value of the time series.
-#'@param probs.FDC a real, between 0 and 1. Specific probability of occurence of the flow duration curve (FDC)
-#' @return a real, number corresponding to the value of the FDC at the probalbility probs.FDC
+#' @title  Cumulative frequency curve at a specific percentile
+#' @description Function to compute the Cumulative frequency Curve of a time serie at
+#'              a specific occurrence probability. In Hydrology, the cumulative frequency curve
+#'              of a Discharge time serie is called "Flow Duration curve".
+#' @param x a vector of real, value of the time series.
+#' @param probs.FDC a real, between 0 and 1. Specific probability of occurence of the Cumulative
+#'        frequency curve (default: "0.1).
+#' @return a real, value corresponding to the Cumulative frequency curve at the probalbility probs.FDC
 #' @examples
 #' f_FDC_x(x=vect.Q)
 #' f_FDC_x(x=vect.Q,probs.FDC=0.5)
@@ -46,12 +48,11 @@ f_FDC_x=function(x,probs.FDC=0.1){
 
 
 ######################################################################
-##### Function to compute the variable "Volume deficit": sum of differences
+#' @title Volume deficit
+#' @description Function to compute the variable "Volume deficit": sum of differences
 ## between the values of the time series and the cumulative frequency curve
-## (probability of occurence against value).
-##
-
-#'@param x a vector of real, value of the time series.
+## (probability of occurence against value) at the percentile 0.15.
+#' @param x a vector of real, value of the time series.
 #' @return a real, number corresponding to the value of the FDC at the probalbility probs.FDC
 #' @examples
 #' FDC_lowvol(x=vect.Q)
@@ -69,19 +70,36 @@ FDC_lowvol=function(x){
 
 
 ######################################################################
-##### A specific variable is applied to the data.
-
-#'@param datapath vector of character, path of the files to read.
-#'@param ind.catch vector of integer, index of station to keep, NULL = All
+#' @title Extration of variable from a time serie
+#' @description A specific variable is extracted from the data accordingly
+#'              to a provided classification of groups.
+#' @param data.station data object from the StatTrendAnalysis package, data from which to extract the variable of interest.
+#' @param funct function, function to apply for extracting the variable from the value of the time serie.
+#' @param timestep character, option on the type of aggregation on time to perform. Available:
+#' \enumerate{
+#'            \item 'year', variable is extracted for each year (default option)
+#'            \item 'month', variable is extracted for each months
+#'            \item 'None', no aggregation on time is considered
+#'            }
+#'        Any other value for this argument will return an error message.
+#' @param period vector of character, date of start and of end of the period to considered in the data.
+#'        Imposed date format is "YYYY-mm-dd". Default option (period = NULL) is to considered all the
+#'        periods avalailable in the data.
+#' @param per.start character, allow to index years/months accotdingly to per.start (default: "01-01")
+#' @param ... arguments needed for the function provided through the argument "funct".
 #' @return a list of two objects (data, a unique data.tibble containing all
 #' the data grouped by file;; info, a data.tibble with the file and matching groups)
 #' @examples
-#' read.timeSeries(datapath=datapath)
-#' read.timeSeries(datapath=datapath,ind.catch=1:51)
-#' read.timeSeries(datapath=datapath,ind.catch=c(1,9,14,5,80))
+#' extract.Var(data.station=data)
+#' extract.Var(data.station=data,funct=min)
+#' extract.Var(data.station=data,funct=FDC_lowvol,period=c("1965-01-01","2020-01-01"))
+#' extract.Var(data.station=data,funct=f_FDC_x,probs.FDC=0.15)
 #' @export
-extract.Var=function(data.station,funct=max,timestep="year",period=NULL
-                     ,per.start="01-01",percent.missing=0
+extract.Var=function(data.station
+                     ,funct=max
+                     ,timestep="year"
+                     ,period=NULL
+                     ,per.start="01-01"
                      ,...){
 
   require(dplyr)

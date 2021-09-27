@@ -1,15 +1,15 @@
 
 
 ######################################################################
-##### Data reading of the 207 stattions
-
-#'@param datapath vector of character, path of the files to read.
-#'@param ind.catch vector of integer, index of station to keep, NULL = All
-#'@param NA.code vector of strings, codes of the NA values in the files to be read, default "-99.000"
-#'@param col.date vector of integer, column number for year, month, day, if length == 1,
-#'it is already a date format
+#' @title Load and process data
+#' @description Read data from specified files and orgnaize it in the proper format for variable extraction.
+#' @param datapath vector of character, path of the files to load.
+#' @param ind.catch vector of integer, index of station to keep (default: NULL, all files are considered).
+#' @param NA.code vector of strings, codes of the NA values in the files to be read (default: "-99.000").
+#' @param col.date vector of integer, column number for year, month, day, if length == 1,
+#' it is already a date format.
 #' @return a list of two objects (data, a unique data.tibble containing all
-#' the data grouped by file;; info, a data.tibble with the file and matching groups)
+#' the data grouped by file; info, a data.tibble with the file and matching groups)
 #' @examples
 #' read.timeSeries(datapath=datapath)
 #' read.timeSeries(datapath=datapath,ind.catch=1:51)
