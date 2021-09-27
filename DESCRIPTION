@@ -1,5 +1,5 @@
-Package: StatsTrendAnalysis
-Title: Statistical Trend Analysis on time series
+Package: StatsAnalysisTrend
+Title: Statistical Analysis of Trends
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Valentin",
