@@ -31,8 +31,6 @@ GeneralMannKendall.wrap=function(X,level=0.1,dep.option='INDE',DoDetrending=TRUE
 #' 'GeneralMannKendall.wrap' to perform a Mann-Kendall trend analysis on data.extract.
 #' @param list.stats vector, optional argument, information to add to the returned results.
 #' @return a dataframe, with the different results of the trend analysis.
-#' @examples
-#' GeneralMannKendall.wrap(X=data.Var$value)
 #' @export
 Estimate.stats=function(data.extract
                         ,funct.stat=GeneralMannKendall.wrap

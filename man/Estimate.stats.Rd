@@ -25,6 +25,3 @@ a dataframe, with the different results of the trend analysis.
 \description{
 Applies a staticitcal trend analysis to an extracted variable, result from the function 'extract.Var()'
 }
-\examples{
-GeneralMannKendall.wrap(X=data.Var$value)
-}

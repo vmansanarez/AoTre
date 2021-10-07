@@ -9,9 +9,10 @@
 #'        frequency curve (default: "0.1).
 #' @return a real, value corresponding to the Cumulative frequency curve at the probalbility probs.FDC
 #' @examples
+#' vect.Q= exp(seq(from = 0.01,to = 2,by = 0.01))
 #' f_FDC_x(x=vect.Q)
 #' f_FDC_x(x=vect.Q,probs.FDC=0.5)
-#' read.timeSeries(datapath=datapath,ind.catch=c(1,9,14,5,80))
+#' f_FDC_x(x=vect.Q,probs.FDC=1)
 #' @export
 f_FDC_x=function(x,probs.FDC=0.1){
 
@@ -55,6 +56,7 @@ f_FDC_x=function(x,probs.FDC=0.1){
 #' @param x a vector of real, value of the time series.
 #' @return a real, number corresponding to the value of the FDC at the probalbility probs.FDC
 #' @examples
+#' vect.Q= exp(seq(from = 0.01,to = 2,by = 0.01))
 #' FDC_lowvol(x=vect.Q)
 #' @export
 FDC_lowvol=function(x){

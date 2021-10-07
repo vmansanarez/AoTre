@@ -16,5 +16,6 @@ a real, number corresponding to the value of the FDC at the probalbility probs.F
 Function to compute the variable "Volume deficit": sum of differences
 }
 \examples{
+vect.Q= exp(seq(from = 0.01,to = 2,by = 0.01))
 FDC_lowvol(x=vect.Q)
 }

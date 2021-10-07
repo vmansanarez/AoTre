@@ -21,7 +21,8 @@ a specific occurrence probability. In Hydrology, the cumulative frequency curve
 of a Discharge time serie is called "Flow Duration curve".
 }
 \examples{
+vect.Q= exp(seq(from = 0.01,to = 2,by = 0.01))
 f_FDC_x(x=vect.Q)
 f_FDC_x(x=vect.Q,probs.FDC=0.5)
-read.timeSeries(datapath=datapath,ind.catch=c(1,9,14,5,80))
+f_FDC_x(x=vect.Q,probs.FDC=1)
 }
