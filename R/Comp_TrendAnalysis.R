@@ -49,12 +49,18 @@ Estimate.stats=function(data.extract
   data.Y.extract=group_by_at(.tbl=data.extract,.vars = group.names)
 
   ### Aggregate function 'funst.stat' on each group of data.Y.extract
-  data.extract.fin=summarise_each(tbl = select(data.Y.extract,c(group.names,"values")),funs = funct.stat)
+  data.extract.fin=
+    ### Select the groups
+    select(data.Y.extract,all_of(c(group.names,"values"))) %>%
+    ### apply function on values accounting for grouping variables 'group.names"
+    summarise(across(.cols = "values", .fns = funct.stat))
+
+
   ### catch names of the results from funct.stat
   colnames.funct=colnames(data.extract.fin$values[[1]])
 
   ### Create data.frame for the returned results
-  data.final=cbind.data.frame(group=select(data.extract.fin,group.names),
+  data.final=cbind.data.frame(group=select(data.extract.fin,all_of(group.names)),
                               as.data.frame(t(matrix(unlist(data.extract.fin$values,use.names = TRUE)
                                                      ,nrow=length(data.extract.fin$values[[1]])))))
 
