@@ -106,7 +106,8 @@ FDC_lowvol=function(x){
 extract.Var=function(data.station = NULL ## data already prepared. Assumed: last column is the value and previous ones are the groups
                      ,data.group = NULL ## Data with the different groups
                      ,data.values = NULL ## Data with the corresponding values for each groups (hyp. Same index)
-                     ,funct=max,timestep="year",period=NULL
+                     ,funct=max,timestep="year"
+                     ,period=NULL
                      ,per.start="01-01"
                      ### settings if working with datetime
                      ,pos.datetime=NA
