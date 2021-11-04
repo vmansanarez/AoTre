@@ -68,7 +68,7 @@ readFiles.TS=function(datapath,ind.catch=NULL,NA.code="-99.000",col.date=c(1,2,3
   }
   ### Time processing
   ## Assumption that same time over different stations?
-  tmp.time=paste(data.raw$V1,sprintf("%02d",data.raw$V2),sprintf("%02d",data.raw$V3),sep="-")
+  tmp.time=paste(data.raw$V1,data.raw$V2,data.raw$V3,sep="-")
   day.time=as.Date(tmp.time,format = "%Y-%m-%d", origin = "1970-01-01")
   # Date format was chosen.
 
@@ -102,7 +102,7 @@ readFiles.TS=function(datapath,ind.catch=NULL,NA.code="-99.000",col.date=c(1,2,3
       }
       ### Time processing
       ## Assumption that same time over different stations?
-      tmp.time=paste(data.raw$V1,sprintf("%02d",data.raw$V2),sprintf("%02d",data.raw$V3),sep="-")
+      tmp.time=paste(data.raw$V1,data.raw$V2,data.raw$V3,sep="-")
       day.time=as.Date(tmp.time,format = "%Y-%m-%d", origin = "1970-01-01")
       # Date format was chosen.
 
