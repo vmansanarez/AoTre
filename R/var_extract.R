@@ -302,8 +302,9 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
   ### Apply function of interest
   data.extract=summarise_all(.tbl = data.extract.step1,.funs = funct,...)
 
-  ### Replace -Inf values by NA. Some primitive function (like max()) return -Inf when all data are NA.
-  data.extract = mutate(.data = data.extract, values = replace(values, values == -Inf, NA))
+  ### Replace -Inf and Inf values by NA. Some primitive function (like max()) return -Inf (or Inf for min function)
+  # when all data are NA.
+  data.extract = mutate(.data = data.extract, values = replace(values, is.infinite(values), NA))
 
   return(data.extract)
 }
