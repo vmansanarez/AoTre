@@ -102,6 +102,7 @@ FDC_lowvol=function(x){
 #' extract.Var(data.station=data,funct=min)
 #' extract.Var(data.station=data,funct=FDC_lowvol,period=c("1965-01-01","2020-01-01"))
 #' extract.Var(data.station=data,funct=f_FDC_x,probs.FDC=0.15)
+#' @importFrom lubridate %m+%
 #' @export
 extract.Var=function(data.station = NULL ## data already prepared. Assumed: last column is the value and previous ones are the groups
                      ,data.group = NULL ## Data with the different groups
@@ -113,8 +114,8 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
                      ,pos.datetime=NA
                      ,...){
 
-  require(dplyr)
-  require(lubridate)
+  # require(dplyr)
+  # require(lubridate)
 
   ############################################
   ############################################
@@ -159,8 +160,8 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
     }
     if(!is.tbl(data.group)){
       ## group.d is data.frame, combining with val will give a data.frame
-      tmp.dataframe=bind_cols(data.group,data.values)
-      data.all=tibble(tmp.dataframe)
+      tmp.dataframe=dplyr::bind_cols(data.group,data.values)
+      data.all=dplyr::tibble(tmp.dataframe)
       rm(tmp.dataframe) ### remove the tmp object from memory
     }else{
       data.all=bind_cols(data.group,data.values)
@@ -189,16 +190,16 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
     # To be done
 
     ### Grouped the data by all columns that are factor, id est the "group" columns
-    data.all.tmp.grouped = data.all %>% group_by(across(where(is.factor)))
+    data.all.tmp.grouped = dplyr::group_by(.data = data.all,dplyr::across(where(is.factor)))
 
     ### Filter data: only the wanted period is kept
     # data.all.sel.group = filter(.data = data.all.tmp.grouped, datetime > period[1] & datetime < period[2])
 
 
 
-    data.all.sel.group = filter(.data = data.all.tmp.grouped, datetime  <= period[2])
+    data.all.sel.group = dplyr::filter(.data = data.all.tmp.grouped, datetime  <= period[2])
 
-    data.all.time.filtered = filter(.data = data.all.sel.group, datetime  >= period[1])
+    data.all.time.filtered = dplyr::filter(.data = data.all.sel.group, datetime  >= period[1])
     data.all=data.all.time.filtered
 
     ### Remove temporary object to free memory
@@ -213,7 +214,7 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
 
     if(per.start=="01-01"){
       ### Default year definition: from 1st of January to the 31st of December.
-      data.all.grTime=mutate(data.all,datetime=factor(as.numeric(format(datetime, format="%Y"))))
+      data.all.grTime=dplyr::mutate(data.all,datetime=factor(as.numeric(format(datetime, format="%Y"))))
     }else{
       ### Local function to index years accotdingly to per.start
       f.data.start.tmp=function(x.date,per.start){
@@ -233,7 +234,7 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
       # data.all.grTime.new$datetime=datetime.tmp
       # #Similar
 
-      data.all.grTime=mutate(data.all,datetime=factor(sapply(datetime,f.data.start.tmp,per.start=per.start)))
+      data.all.grTime=dplyr::mutate(data.all,datetime=factor(sapply(datetime,f.data.start.tmp,per.start=per.start)))
     }
 
     # data.all.grTime=data.all %>% mutate(datetime=factor(as.numeric(format(datetime, format="%Y"))))
@@ -242,7 +243,7 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
 
     if(per.start=="01"){
       ### Default year definition: from 1st of January to the 31st of December.
-      data.all.grTime=mutate(data.all,datetime=factor(as.numeric(format(datetime, format="%m"))))
+      data.all.grTime=dplyr::mutate(data.all,datetime=factor(as.numeric(format(datetime, format="%m"))))
     }else{
       ### Local function to index years accotdingly to per.start
       f.data.start.tmp2=function(x.date,per.start){
@@ -263,7 +264,7 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
       # data.all.grTime.new$datetime=datetime.tmp
       # #Similar
 
-      data.all.grTime=mutate(data.all,datetime=factor(sapply(datetime,f.data.start.tmp2,per.start=per.start)))
+      data.all.grTime=dplyr::mutate(data.all,datetime=factor(sapply(datetime,f.data.start.tmp2,per.start=per.start)))
     }
 
   }else if(timestep=="Station"){
@@ -276,7 +277,7 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
     }
   }else if(timestep=="None"){
     ### No grouping
-    data.all.grTime=select(data.all,values)
+    data.all.grTime=dplyr::select(data.all,values)
   }else{
     stop("extract.Var: wrong timestep argument value")
   }
@@ -297,14 +298,14 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
 
   ### Group data by all columns except column of values (setdiff function remove the column 'values' from
   # the list of names of the columns to group)
-  data.extract.step1= group_by_at(.tbl=data.all.grTime,.vars = setdiff(names(data.all.grTime), "values"))
+  data.extract.step1= dplyr::group_by_at(.tbl=data.all.grTime,.vars = dplyr::setdiff(names(data.all.grTime), "values"))
 
   ### Apply function of interest
-  data.extract=summarise_all(.tbl = data.extract.step1,.funs = funct,...)
+  data.extract=dplyr::summarise_all(.tbl = data.extract.step1,.funs = funct,...)
 
   ### Replace -Inf and Inf values by NA. Some primitive function (like max()) return -Inf (or Inf for min function)
   # when all data are NA.
-  data.extract = mutate(.data = data.extract, values = replace(values, is.infinite(values), NA))
+  data.extract = dplyr::mutate(.data = data.extract, values = replace(values, is.infinite(values), NA))
 
   return(data.extract)
 }

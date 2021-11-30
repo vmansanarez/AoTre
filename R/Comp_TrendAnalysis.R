@@ -13,9 +13,8 @@
 #' @export
 GeneralMannKendall.wrap=function(X,level=0.1,dep.option='INDE',DoDetrending=TRUE){
   ### Assume that the package BFunk is installed on the machine
-  require(BFunk)
   ### Apply the Mann Kendall test on vector X
-  res.test=generalMannKendall(X = X,level=level,dep.option=dep.option,DoDetrending=DoDetrending)
+  res.test=BFunk::generalMannKendall(X = X,level=level,dep.option=dep.option,DoDetrending=DoDetrending)
   ### Results to be returned, remove H and Dep as can be computed back from p, the p-value
   data.tmp=data.frame(p=res.test$P,stat=res.test$STAT,trend=res.test$TREND)
   return(list(data.tmp))
@@ -36,31 +35,31 @@ Estimate.stats=function(data.extract
                         ,funct.stat=GeneralMannKendall.wrap
                         ,list.stats=NULL
                         ,...){
-  require(dplyr)
+  # require(dplyr)
   ### [WARNING]: aggregation to be modified to account for more groups
   ### Aggregation of function 'funct.stat' on data value column from data.extract.
   if("datetime" %in% colnames(data.extract)){
     ### Data already agregated by Date in the previous step (extraction of variable)
-    group.names=setdiff(colnames(data.extract),c("datetime","values"))
+    group.names=dplyr::setdiff(colnames(data.extract),c("datetime","values"))
   }else{
-    group.names=setdiff(colnames(data.extract),"values")
+    group.names=dplyr::setdiff(colnames(data.extract),"values")
   }
   ### Group data accordingly to group.names
-  data.Y.extract=group_by_at(.tbl=data.extract,.vars = group.names)
+  data.Y.extract=dplyr::group_by_at(.tbl=data.extract,.vars = group.names)
 
   ### Aggregate function 'funst.stat' on each group of data.Y.extract
-  data.extract.fin=
-    ### Select the groups
-    select(data.Y.extract,all_of(c(group.names,"values"))) %>%
-    ### apply function on values accounting for grouping variables 'group.names"
-    summarise(across(.cols = "values", .fns = funct.stat))
-
+  # Select the groups
+  data.extract.select=dplyr::select(data.Y.extract,dplyr::all_of(c(group.names,"values")))
+  # apply function on values accounting for grouping variables 'group.names"
+  data.extract.fin=dplyr::summarise(.data = data.extract.select, dplyr::across(.cols = "values", .fns = funct.stat))
+  # Remove object 'data.extract.select' to free memory
+  rm(data.extract.select)
 
   ### catch names of the results from funct.stat
   colnames.funct=colnames(data.extract.fin$values[[1]])
 
   ### Create data.frame for the returned results
-  data.final=cbind.data.frame(group=select(data.extract.fin,all_of(group.names)),
+  data.final=cbind.data.frame(group=dplyr::select(data.extract.fin,dplyr::all_of(group.names)),
                               as.data.frame(t(matrix(unlist(data.extract.fin$values,use.names = TRUE)
                                                      ,nrow=length(data.extract.fin$values[[1]])))))
 
