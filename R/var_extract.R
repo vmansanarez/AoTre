@@ -249,8 +249,8 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
       f.data.start.tmp2=function(x.date,per.start){
         n.year=as.numeric(format(x.date, format="%Y"))
         n.month=as.numeric(format(x.date, format="%m"))
-        start.date=as.Date(paste(n.year,sprintf("%02d", n.month),per.start,sep="-"),format="%Y-%m-%d") %m+% months(-1)
-        end.date=as.Date(paste(n.year,sprintf("%02d", n.month),per.start,sep="-"),format="%Y-%m-%d")-1
+        start.date=as.Date(paste(n.year, n.month,per.start,sep="-"),format="%Y-%m-%d") %m+% months(-1)
+        end.date=as.Date(paste(n.year, n.month,per.start,sep="-"),format="%Y-%m-%d")-1
         if(between(x.date,start.date,end.date)){
           res.ind=format(x.date, format="%Y-%m")
         }else{
