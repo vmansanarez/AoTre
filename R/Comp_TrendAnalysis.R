@@ -51,7 +51,7 @@ Estimate.stats=function(data.extract
   # Select the groups
   data.extract.select=dplyr::select(data.Y.extract,dplyr::all_of(c(group.names,"values")))
   # apply function on values accounting for grouping variables 'group.names"
-  data.extract.fin=dplyr::summarise(.data = data.extract.select, dplyr::across(.cols = "values", .fns = funct.stat))
+  data.extract.fin=dplyr::summarise(.data = data.extract.select, dplyr::across(.cols = "values", .fns = funct.stat,...))
   # Remove object 'data.extract.select' to free memory
   rm(data.extract.select)
 
