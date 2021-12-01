@@ -107,7 +107,8 @@ FDC_lowvol=function(x){
 extract.Var=function(data.station = NULL ## data already prepared. Assumed: last column is the value and previous ones are the groups
                      ,data.group = NULL ## Data with the different groups
                      ,data.values = NULL ## Data with the corresponding values for each groups (hyp. Same index)
-                     ,funct=max,timestep="year"
+                     ,funct=max
+                     ,timestep="year"
                      ,period=NULL
                      ,per.start="01-01"
                      ### settings if working with datetime
@@ -212,9 +213,11 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
   ### Allow to do yearly, monthly grouping. Also allow to not compute a function per group of time
   if(timestep=="year"){
 
+    ### column of date is grouped by years
     if(per.start=="01-01"){
       ### Default year definition: from 1st of January to the 31st of December.
-      data.all.grTime=dplyr::mutate(data.all,datetime=factor(as.numeric(format(datetime, format="%Y"))))
+      data.all.grTime=dplyr::mutate(data.all,datetime=format(datetime,
+                                                             format="%Y"))
     }else{
       ### Local function to index years accotdingly to per.start
       f.data.start.tmp=function(x.date,per.start){
@@ -228,43 +231,97 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
         }
         return(res.ind)
       }
-      # datetime.mod=sapply(data.all$datetime,f.data.start.tmp,per.start=per.start)
-      # datetime.tmp=factor(datetime.mod)
-      # data.all.grTime.new=data.all
-      # data.all.grTime.new$datetime=datetime.tmp
-      # #Similar
 
-      data.all.grTime=dplyr::mutate(data.all,datetime=factor(sapply(datetime,f.data.start.tmp,per.start=per.start)))
+      data.all.grTime=dplyr::mutate(data.all,
+                                    datetime=sapply(datetime,
+                                                    f.data.start.tmp,
+                                                    per.start=per.start))
     }
 
     # data.all.grTime=data.all %>% mutate(datetime=factor(as.numeric(format(datetime, format="%Y"))))
   }else if(timestep=="month"){
 
-
+    ### column of date is grouped by months, independantly of the year and day
     if(per.start=="01"){
-      ### Default year definition: from 1st of January to the 31st of December.
-      data.all.grTime=dplyr::mutate(data.all,datetime=factor(as.numeric(format(datetime, format="%m"))))
-    }else{
-      ### Local function to index years accotdingly to per.start
-      f.data.start.tmp2=function(x.date,per.start){
-        n.year=as.numeric(format(x.date, format="%Y"))
-        n.month=as.numeric(format(x.date, format="%m"))
-        start.date=as.Date(paste(n.year, n.month,per.start,sep="-"),format="%Y-%m-%d") %m+% months(-1)
-        end.date=as.Date(paste(n.year, n.month,per.start,sep="-"),format="%Y-%m-%d")-1
-        if(between(x.date,start.date,end.date)){
-          res.ind=format(x.date, format="%Y-%m")
-        }else{
-          res.ind=format(as.Date(x.date) %m+% months(1),format="%Y-%m")
-        }
-        return(res.ind)
-      }
-      # datetime.mod=sapply(data.all$datetime,f.data.start.tmp,per.start=per.start)
-      # datetime.tmp=factor(datetime.mod)
-      # data.all.grTime.new=data.all
-      # data.all.grTime.new$datetime=datetime.tmp
-      # #Similar
+      ### Default month definition: from 1st of the month.
+      data.all.grTime=dplyr::mutate(data.all,datetime=format(datetime,
+                                                             format="%m"))
+    }else if(nchar(per.start)<=2){
+      per.start.tmp=as.numeric(per.start)
+      if(!is.na(per.start.tmp)){
+        if(per.start.tmp<28){
+          #right start of the month. Starting between 28th and 31st won't work for some months
 
-      data.all.grTime=dplyr::mutate(data.all,datetime=factor(sapply(datetime,f.data.start.tmp2,per.start=per.start)))
+          ### Local function to index Months accordingly to per.start
+          f.data.start.Month=function(x.date,per.start){
+            ### Catch months of dates
+            n.month=as.numeric(format(x.date, format="%m"))
+            start.date=as.Date(paste(2004, n.month,per.start,sep="-"),format="%Y-%m-%d") %m+% months(-1)
+            end.date=as.Date(paste(2004, n.month,per.start,sep="-"),format="%Y-%m-%d")-1
+            if(between(x.date,start.date,end.date)){
+              res.ind=format(x.date, format="%m")
+            }else{
+              res.ind=format(as.Date(x.date) %m+% months(1),format="%m")
+            }
+            return(res.ind)
+          }
+
+          data.all.grTime=dplyr::mutate(data.all,
+                                        datetime=sapply(datetime
+                                                        ,f.data.start.tmp2
+                                                        ,per.start=per.start))
+
+        }else{
+          stop("ARGUMENT ERROR:'extract.Var': incoherence between 'per.start' and 'timestep'!")
+        }
+      }else{
+        stop("ARGUMENT ERROR:'extract.Var': incoherence between 'per.start' and 'timestep'!")
+      }
+    }else{
+      stop("ARGUMENT ERROR:'extract.Var': wrong argument 'per.start' for timestep = 'month'")
+    }
+
+  }else if(timestep=="year-month"){
+
+    ### column of date is grouped by year and month, independantly of the day
+    if(per.start=="01"){
+      ### Default month definition: from 1st of the month.
+      data.all.grTime=dplyr::mutate(data.all,
+                                    datetime=format(datetime,format="%Y-%m"))
+    }else if(nchar(per.start)<=2){
+      per.start.tmp=as.numeric(per.start)
+      if(!is.na(per.start.tmp)){
+        if(per.start.tmp<28){
+          #right start of the month. Starting between 28th and 31st won't work for some months
+
+          ### Local function to index Months accordingly to per.start
+          f.data.start.Month=function(x.date,per.start){
+            ### Catch year and months of dates
+            n.year=as.numeric(format(x.date, format="%Y"))
+            n.month=as.numeric(format(x.date, format="%m"))
+            start.date=as.Date(paste(n.year, n.month,per.start,sep="-"),format="%Y-%m-%d") %m+% months(-1)
+            end.date=as.Date(paste(n.year, n.month,per.start,sep="-"),format="%Y-%m-%d")-1
+            if(between(x.date,start.date,end.date)){
+              res.ind=format(x.date, format="%Y-%m")
+            }else{
+              res.ind=format(as.Date(x.date) %m+% months(1),format="%Y-%m")
+            }
+            return(res.ind)
+          }
+
+          data.all.grTime=dplyr::mutate(data.all,
+                                        datetime=sapply(datetime
+                                                        ,f.data.start.tmp2
+                                                        ,per.start=per.start))
+
+        }else{
+          stop("ARGUMENT ERROR:'extract.Var': incoherence between 'per.start' and 'timestep'!")
+        }
+      }else{
+        stop("ARGUMENT ERROR:'extract.Var': incoherence between 'per.start' and 'timestep'!")
+      }
+    }else{
+      stop("ARGUMENT ERROR:'extract.Var': wrong argument 'per.start' for timestep = 'month'")
     }
 
   }else if(timestep=="Station"){
@@ -282,30 +339,21 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
     stop("extract.Var: wrong timestep argument value")
   }
 
-  ############################################
-  ### Handling missing data. If too much NA values per yera, year is set to NA.
-  # View(data.all.grTime %>%
-  #   filter(is.na(value))  %>% group_by(datetime,group) %>% count(group))
-  #
-  # data.count.step1=filter(.data = data.all.grTime,.preserve = !is.na(value))
-  # data.count.step2=data.count.step1 %>% group_by(datetime,group)
-  # data.count.step3=count(x = data.count.step2,wt=NULL)
-  #
-  # days.need=as.integer((1-percent.missing)*365.25)
-  #
-  # data.count.step4=filter(.data = data.count.step3,n>=days.need)
-  ## [To be done]
-
   ### Group data by all columns except column of values (setdiff function remove the column 'values' from
   # the list of names of the columns to group)
-  data.extract.step1= dplyr::group_by_at(.tbl=data.all.grTime,.vars = dplyr::setdiff(names(data.all.grTime), "values"))
+  data.extract.step1= dplyr::group_by_at(.tbl=data.all.grTime,
+                                         .vars = dplyr::setdiff(names(data.all.grTime),
+                                                                "values"))
 
   ### Apply function of interest
-  data.extract=dplyr::summarise_all(.tbl = data.extract.step1,.funs = funct,...)
+  data.extract=dplyr::summarise_all(.tbl = data.extract.step1,
+                                    .funs = funct,
+                                    ...)
 
   ### Replace -Inf and Inf values by NA. Some primitive function (like max()) return -Inf (or Inf for min function)
   # when all data are NA.
-  data.extract = dplyr::mutate(.data = data.extract, values = replace(values, is.infinite(values), NA))
+  data.extract = dplyr::mutate(.data = data.extract,
+                               values = replace(values, is.infinite(values), NA))
 
   return(data.extract)
 }
