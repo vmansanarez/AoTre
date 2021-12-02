@@ -92,6 +92,7 @@ FDC_lowvol=function(x){
 #'        periods avalailable in the data.
 #' @param per.start character, allow to index years/months accotdingly to per.start (default: "01-01").
 #' @param pos.datetime integer, column number of the Date object in the provided groups. NA by default: No group of date provided.
+#' @param formatDate character string, format of the date column in the data
 #' @param ... arguments needed for the function provided through the argument "funct".
 #' @return a list of two objects (data, a unique data.tibble containing all
 #' the data grouped by file;; info, a data.tibble with the file and matching groups)
@@ -105,15 +106,16 @@ FDC_lowvol=function(x){
 #' @importFrom lubridate %m+%
 #' @export
 extract.Var=function(data.station = NULL ## data already prepared. Assumed: last column is the value and previous ones are the groups
-                     ,data.group = NULL ## Data with the different groups
-                     ,data.values = NULL ## Data with the corresponding values for each groups (hyp. Same index)
-                     ,funct=max
-                     ,timestep="year"
-                     ,period=NULL
-                     ,per.start="01-01"
-                     ### settings if working with datetime
-                     ,pos.datetime=NA
-                     ,...){
+                         ,data.group = NULL ## Data with the different groups
+                         ,data.values = NULL ## Data with the corresponding values for each groups (hyp. Same index)
+                         ,funct=max
+                         ,timestep="year"
+                         ,period=NULL
+                         ,per.start="01-01"
+                         ### settings if working with datetime
+                         ,pos.datetime=NA
+                         ,formatDate="%Y-%m-%d"
+                         ,...){
 
   # require(dplyr)
   # require(lubridate)
@@ -167,7 +169,7 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
     }else{
       data.all=bind_cols(data.group,data.values)
     }
-    if(!is.na(pos.datetime)){
+    if(is.na(pos.datetime)){
       ### No date object in the group
       colnames(data.all)=c(paste0("group",1:ncol(data.group)),"values")
     }else{
@@ -182,6 +184,33 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
 
   }
 
+  ### check if datetime is in Date format or Character
+  # Needed because of the permutation on the start of the year/time later on.
+  # Maybe do it if ther is a permutation?
+  if(!is.na(pos.datetime)){
+    date.class=class(data.all$datetime)
+    if(date.class == "character"){
+      if(formatDate == "%Y-%m-%d"){
+        data.all=dplyr::mutate(.data=data.all,
+                               datetime=as.Date(x = datetime,
+                                                format=formatDate))
+      }else if(formatDate == "%Y-%m"){
+        data.all=dplyr::mutate(.data=data.all,
+                               datetime=as.Date(x = paste(datetime,"01",sep="-"),
+                                                format="%Y-%m-%d"))
+      }else if(formatDate == "%Y"){
+        data.all=dplyr::mutate(.data=data.all,
+                               datetime=as.Date(x = paste(datetime,"01","01",sep="-"),
+                                                format="%Y-%m-%d"))
+      }else{
+        stop("ARGUMENT ERROR:'extract.Var': wrong 'formatDate' argument!")
+      }
+    }
+  }
+  dplyr::mutate(.data=year.data$data,
+                datetime=as.Date(x = datetime,
+                                 format="%Y-%m"))
+
   ############################################
   ### Select period
   if(is.null(period)){
@@ -191,16 +220,19 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
     # To be done
 
     ### Grouped the data by all columns that are factor, id est the "group" columns
-    data.all.tmp.grouped = dplyr::group_by(.data = data.all,dplyr::across(where(is.factor)))
+    data.all.tmp.grouped = dplyr::group_by(.data = data.all,
+                                           dplyr::across(where(is.factor)))
 
     ### Filter data: only the wanted period is kept
     # data.all.sel.group = filter(.data = data.all.tmp.grouped, datetime > period[1] & datetime < period[2])
 
 
 
-    data.all.sel.group = dplyr::filter(.data = data.all.tmp.grouped, datetime  <= period[2])
+    data.all.sel.group = dplyr::filter(.data = data.all.tmp.grouped,
+                                       datetime  <= period[2])
 
-    data.all.time.filtered = dplyr::filter(.data = data.all.sel.group, datetime  >= period[1])
+    data.all.time.filtered = dplyr::filter(.data = data.all.sel.group,
+                                           datetime  >= period[1])
     data.all=data.all.time.filtered
 
     ### Remove temporary object to free memory
