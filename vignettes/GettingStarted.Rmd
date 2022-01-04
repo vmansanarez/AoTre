@@ -1,0 +1,23 @@
+---
+title: "The StatsAnalysisTrend package"
+author: "Valentin Mansanarez"
+date: "14/12/2021"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+vignette: >
+  %\VignetteIndexEntry{GettingStarted}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  results = "hide",
+  comment = "#>"
+)
+```
+
+
