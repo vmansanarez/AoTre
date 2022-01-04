@@ -203,9 +203,6 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
       }
     }
   }
-  dplyr::mutate(.data=year.data$data,
-                datetime=as.Date(x = datetime,
-                                 format="%Y-%m"))
 
   ############################################
   ### Select period
