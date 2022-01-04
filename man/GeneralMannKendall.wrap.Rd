@@ -27,5 +27,6 @@ a dataframe, with the different statistics and values of interest of the test.
 Apply the GeneralMannKendall function from BFunk package to the serie X.
 }
 \examples{
-GeneralMannKendall.wrap(X=data.Var$value)
+GeneralMannKendall.wrap(X=1:100)
+GeneralMannKendall.wrap(X=rep(1,100))
 }

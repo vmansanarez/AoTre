@@ -29,7 +29,7 @@ readFiles.TS(
 \item{NA.code}{vector of strings, codes of the NA values in the files to be read. Default value is \code{NA.code = "-99.000"}.}
 
 \item{sep.file}{character, the field separator character. For "white space" use \code{sep.file = ""}.
-See argument \link{sep} of \code{\link[utils:read.table]{utils::read.table()}} for more information.}
+See argument \code{sep} of \code{\link[utils]{read.table}} for more information.}
 
 \item{col.date}{vector of integer, the column number for year, month, day. If \code{length(col.date) == 1},
 the column at the index \code{col.date} contains the year, the month and the day.}
@@ -37,42 +37,42 @@ the column at the index \code{col.date} contains the year, the month and the day
 \item{col.val}{integer, the column number of the values to read in the files. By default (\code{col.val = 4}),
 the 4th column is considered as the column of values.}
 
-\item{col.extra}{vector of integer, the column number of the extra column to read. By default, no extra colmuns
+\item{col.extra}{vector of integer, the column number of the extra column to read. By default, no extra columns
 are read (\code{col.extra = NA}).}
 
-\item{header.files}{logical, indicate wheter the files contains or not the name of the variable as its first line.
-See argument \link{header} of \code{\link[utils:read.table]{utils::read.table()}} for more information.}
+\item{header.files}{logical, indicate whether or not the files contains the name of the variable as its first line.
+See argument \code{header} of \code{\link[utils]{read.table}} for more information.}
 
-\item{skip.lines}{integer, number of line to skip before reading the data in the file. See argument \link{skip} of
-\code{\link[utils:read.table]{utils::read.table()}} for more information.}
+\item{skip.lines}{integer, number of line to skip before reading the data in the file. See argument \code{skip} of
+\code{\link[utils]{read.table}} for more information.}
 
-\item{formatDate}{character string, format of the Date in the files. Only used when \link{col.date} has been specified and
+\item{formatDate}{character string, format of the Date in the files. Only used when \code{col.date} has been specified and
 \code{length(col.date) == 1}. Specify the format of the date in the data. More details are available in description of
-argument \link{format} of \code{\link[base:as.Date]{base::as.Date()}}.}
+argument \code{format} of \code{\link[base]{as.Date}}.}
 
-\item{origin}{character string, wrap of argument \link{origin} of \code{\link[base:as.Date]{base::as.Date()}}.}
+\item{origin}{character string, wrap of argument \code{origin} of \code{\link[base]{as.Date}}.}
 
 \item{coord.get}{logical, indicate either or not some information contained in the files needs to be specifically
 read and saved.}
 
-\item{coord.skip.lines}{integer. Only used if \link{coord.get} is \code{TRUE}. It indicates the number of lines to skip at the
+\item{coord.skip.lines}{integer. Only used if \code{coord.get} is \code{TRUE}. It indicates the number of lines to skip at the
 start of the file before reading the specific information.}
 
-\item{coord.col}{vector of integer of length 4. Only used if \link{coord.get} is \code{TRUE}. The function will read
+\item{coord.col}{vector of integer of length 4. Only used if \code{coord.get} is \code{TRUE}. The function will read
 line \code{coord.skip.lines+1} (character separator is white space). Only columns with numeric values will be kept and
-among it only the 4 columns specified in \link{coord.col}.}
+among it only the 4 columns specified in \code{coord.col}.}
 }
 \value{
 a list of two objects (data, a unique data.tibble containing all
 the data grouped by file; info, a data.tibble with the file and matching groups)
 }
 \description{
-Read data from specified files and orgnaize it in the proper format for variable extraction.
+Read data from specified files and organize it in the proper format for variable extraction.
 }
 \examples{
-read.timeSeries(datapath=datapath)
-read.timeSeries(datapath=datapath,ind.catch=1:51)
-read.timeSeries(datapath=datapath,ind.catch=c(1,9,14,5,80))
-read.timeSeries(datapath=datapath,,NA.code="-9999")
-read.timeSeries(datapath=datapath,,NA.code=c("-9999","-1"))
+readFiles.TS(datapath=datapath)
+readFiles.TS(datapath=datapath,ind.catch=1:51)
+readFiles.TS(datapath=datapath,ind.catch=c(1,9,14,5,80))
+readFiles.TS(datapath=datapath,,NA.code="-9999")
+readFiles.TS(datapath=datapath,,NA.code=c("-9999","-1"))
 }
