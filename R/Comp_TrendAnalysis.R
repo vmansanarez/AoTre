@@ -61,7 +61,8 @@ Estimate.stats=function(data.extract
   colnames.funct=colnames(data.extract.fin$values[[1]])
 
   ### Create data.frame for the returned results
-  data.final=cbind.data.frame(group=dplyr::select(data.extract.fin,dplyr::all_of(group.names)),
+  data.final=cbind.data.frame(group=dplyr::select(data.extract.fin,
+                                                  dplyr::all_of(group.names)),
                               as.data.frame(t(matrix(unlist(data.extract.fin$values,use.names = TRUE)
                                                      ,nrow=length(data.extract.fin$values[[1]])))))
 

@@ -122,7 +122,7 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
   ### Check argument data.station
   # WORK IN PROGRESS
   ############################################
-  # Either data already joined or provid, group and value separately
+  # Either data already joined or provided, group and value separately
 
   if(is.null(data.group) && is.null(data.values)){
     if(is.null(data.station)){
@@ -244,10 +244,10 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
     ### column of date is grouped by years
     if(per.start=="01-01"){
       ### Default year definition: from 1st of January to the 31st of December.
-      data.all.grTime=dplyr::mutate(data.all,datetime=format(datetime,
+      data.all.grTime=dplyr::mutate(.data=data.all,datetime=format(datetime,
                                                              format="%Y"))
     }else{
-      ### Local function to index years accotdingly to per.start
+      ### Local function to index years accordingly to per.start
       f.data.start.tmp=function(x.date,per.start){
         n.year=as.numeric(format(x.date, format="%Y"))
         start.date=as.Date(paste(n.year-1,per.start,sep="-"),format="%Y-%m-%d")
@@ -269,7 +269,7 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
     # data.all.grTime=data.all %>% mutate(datetime=factor(as.numeric(format(datetime, format="%Y"))))
   }else if(timestep=="month"){
 
-    ### column of date is grouped by months, independantly of the year and day
+    ### column of date is grouped by months, independently of the year and day
     if(per.start=="01"){
       ### Default month definition: from 1st of the month.
       data.all.grTime=dplyr::mutate(data.all,datetime=format(datetime,
