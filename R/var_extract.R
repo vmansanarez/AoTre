@@ -117,9 +117,6 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
                          ,formatDate="%Y-%m-%d"
                          ,...){
 
-  # require(dplyr)
-  # require(lubridate)
-
   ############################################
   ############################################
   ############################################
@@ -161,13 +158,13 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
     if(nrow(data.group)!=nrow(data.values)){
       stop("ARGUMENT ERROR:'extract.Var': different number of row in inputs!")
     }
-    if(!is.tbl(data.group)){
+    if(!dplyr::is.tbl(data.group)){
       ## group.d is data.frame, combining with val will give a data.frame
       tmp.dataframe=dplyr::bind_cols(data.group,data.values)
       data.all=dplyr::tibble(tmp.dataframe)
       rm(tmp.dataframe) ### remove the tmp object from memory
     }else{
-      data.all=bind_cols(data.group,data.values)
+      data.all=dplyr::bind_cols(data.group,data.values)
     }
     if(is.na(pos.datetime)){
       ### No date object in the group
@@ -256,7 +253,7 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
         n.year=as.numeric(format(x.date, format="%Y"))
         start.date=as.Date(paste(n.year-1,per.start,sep="-"),format="%Y-%m-%d")
         end.date=as.Date(paste(n.year,per.start,sep="-"),format="%Y-%m-%d")-1
-        if(between(x.date,start.date,end.date)){
+        if(dplyr::between(x.date,start.date,end.date)){
           res.ind=n.year
         }else{
           res.ind=n.year+1
@@ -290,7 +287,7 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
             n.month=as.numeric(format(x.date, format="%m"))
             start.date=as.Date(paste(2004, n.month,per.start,sep="-"),format="%Y-%m-%d") %m+% months(-1)
             end.date=as.Date(paste(2004, n.month,per.start,sep="-"),format="%Y-%m-%d")-1
-            if(between(x.date,start.date,end.date)){
+            if(dplyr::between(x.date,start.date,end.date)){
               res.ind=format(x.date, format="%m")
             }else{
               res.ind=format(as.Date(x.date) %m+% months(1),format="%m")
@@ -333,7 +330,7 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
             n.month=as.numeric(format(x.date, format="%m"))
             start.date=as.Date(paste(n.year, n.month,per.start,sep="-"),format="%Y-%m-%d") %m+% months(-1)
             end.date=as.Date(paste(n.year, n.month,per.start,sep="-"),format="%Y-%m-%d")-1
-            if(between(x.date,start.date,end.date)){
+            if(dplyr::between(x.date,start.date,end.date)){
               res.ind=format(x.date, format="%Y-%m")
             }else{
               res.ind=format(as.Date(x.date) %m+% months(1),format="%Y-%m")

@@ -60,13 +60,11 @@ plot_map=function(data.plot,
                   #### Setting plot
                   axis.size.text=25
                   ){
-  require(dplyr)
 
-  require(sf)
-  require(rgeos)
-  require(rnaturalearth)
-  require(ggspatial)
-  require(ggplot2)
+  # require(sf)
+  # require(rgeos)
+  # require(rnaturalearth)
+  # require(ggspatial)
 
   world <- ne_countries(scale = "medium", returnclass = "sf")
 

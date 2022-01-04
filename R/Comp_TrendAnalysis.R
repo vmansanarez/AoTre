@@ -35,7 +35,7 @@ Estimate.stats=function(data.extract
                         ,funct.stat=GeneralMannKendall.wrap
                         ,list.stats=NULL
                         ,...){
-  # require(dplyr)
+
   ### [WARNING]: aggregation to be modified to account for more groups
   ### Aggregation of function 'funct.stat' on data value column from data.extract.
   if("datetime" %in% colnames(data.extract)){
@@ -51,7 +51,8 @@ Estimate.stats=function(data.extract
   # Select the groups
   data.extract.select=dplyr::select(data.Y.extract,dplyr::all_of(c(group.names,"values")))
   # apply function on values accounting for grouping variables 'group.names"
-  data.extract.fin=dplyr::summarise(.data = data.extract.select, dplyr::across(.cols = "values", .fns = funct.stat,...))
+  data.extract.fin=dplyr::summarise(.data = data.extract.select,
+                                    dplyr::across(.cols = "values", .fns = funct.stat,...))
   # Remove object 'data.extract.select' to free memory
   rm(data.extract.select)
 
