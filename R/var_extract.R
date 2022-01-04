@@ -257,8 +257,8 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
         return(res.ind)
       }
 
-      data.all.grTime=dplyr::mutate(data.all,
-                                    datetime=sapply(datetime,
+      data.all.grTime=dplyr::mutate(.data=data.all,
+                                    datetime=sapply(.data$datetime,
                                                     f.data.start.tmp,
                                                     per.start=per.start))
     }
