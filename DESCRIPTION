@@ -7,13 +7,19 @@ Authors@R:
            role = c("aut", "cre"),
            email = "valentin.mansanarez@inrae.fr")
 Description: Read, preprocess and extract variable(s) from time series data. Then perform statistical trend analysis on the extracted variables.
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Depends: 
+    R (>= 3.5.0)
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Imports: 
     BFunk,
     dplyr,
-    lubridate
+    lubridate,
+    ggplot2
+Suggests: 
+    rmarkdown,
+    knitr
+VignetteBuilder: knitr
