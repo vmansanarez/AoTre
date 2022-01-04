@@ -62,7 +62,7 @@ f_FDC_x=function(x,probs.FDC=0.1){
 FDC_lowvol=function(x){
   ## Volume deficit: difference between the actual flow and the FDC threshold
   # for value below
-  FDC.threshold=f_FDC_x(x,probs=0.15)
+  FDC.threshold=f_FDC_x(x,probs.FDC=0.15)
 
   ind.below=which(x<FDC.threshold)
   diff.Flow_FDCthres=FDC.threshold-x[ind.below]
