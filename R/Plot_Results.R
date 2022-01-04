@@ -34,15 +34,15 @@
 #' @export
 plot_map=function(data.plot,
                   ### colnames of X coords, Y coords, group (station), pvalue and stat
-                  data.colnames.settings=c("X_L2E","Y_L2E","group","p","stat"),
+                  colnames.settings=c("Long","Lat","group1","p","stat"),
                   ### size points
                   size.point=c(0.8,1),
                   ### significance level alpha
                   alpha.test=0.05,
                   ### settings of the box/of the coords
                   region.box = "France",
-                  crs.coords.sf = "EPSG:27572",
-                  agr.coords.sf = "constant",
+                  color.colBorder="black",
+                  color.fillBorder=NA,
                   #### Fill settings
                   color.fill.low="#053061",
                   color.fill.middle="#f7f7f7",
@@ -54,67 +54,69 @@ plot_map=function(data.plot,
                   title.size = "Significant?",
                   title.fill = "Statistic",
                   #### Setting plot
-                  axis.size.text=25
-                  ){
+                  axis.size.text=25,
+                  theme.base_size = 20){
 
   # require(sf)
   # require(rgeos)
   # require(rnaturalearth)
   # require(ggspatial)
 
-  world <- ne_countries(scale = "medium", returnclass = "sf")
+  world <- ggplot2::map_data(map = "world")
 
-  xy_stations=data.plot[,data.colnames.settings]
-  colnames(xy_stations)=c("long","lat","group","p")
-  (xy_stations <- st_as_sf(xy_stations, coords = c("long", "lat"),
-                           crs = CRS(crs.coords.sf), agr = agr.coords.sf))
+
+  xy_stations=data.plot[,colnames.settings]
+  colnames(xy_stations)=c("long","lat","group","p","stat")
 
   xy_stations$ID=data.plot$station
-  xy_stations$group=data.plot$group
-  xy_stations$stat=data.plot$stat
 
-  box.lim=getBBox(bbox = region.box)
-
-  ###
+  ## Assign different sizes to non significant and significant results
   f_sign.size=function(x,alpha=0){
     return(ifelse(x<alpha,size.point[2],size.point[1]))
   }
+  ### alpha As an argument
+  xy_stations$size.signif=sapply(xy_stations$p,f_sign.size,alpha=alpha.test)
 
-  xy_stations$size.signif=sapply(xy_stations$p,f_sign.size,alpha=alpha.test)### alpha As an argument
-
+  ###
   xy_stations$fill.stat=xy_stations$stat
-  xy_stations$fill.stat[which(xy_stations$p>alpha.test)] = 0 ### p>0.05, no tendance
+  ### Only color the significant result [DROPPED]
+  # xy_stations$fill.stat[which(xy_stations$p>alpha.test)] = 0 ### p>0.05, no tendance
   xy_stations$fill.stat[which(xy_stations$stat>color.fill.lim[2])] = color.fill.lim[2]
   xy_stations$fill.stat[which(xy_stations$stat<color.fill.lim[1])] = color.fill.lim[1]
+  #
 
-  xy_stations$size.signif=factor(x = xy_stations$size.signif,levels = sort(unique(xy_stations$size.signif)),labels = c("No","Yes"))
+  ### Factorize the size
+  xy_stations$size.signif=factor(x = xy_stations$size.signif,
+                                 levels = sort(unique(xy_stations$size.signif)),
+                                 labels = c("No","Yes"))
 
-  plot.save=ggplot(data = world) +
-    geom_sf()+
-    geom_sf(data = xy_stations,aes(fill = fill.stat,size=size.signif),color="black",stroke=1,shape=21)+
-    coord_sf(xlim = box.lim[1:2], ylim = box.lim[3:4], expand = FALSE)+
+  plot.save=ggplot2::ggplot(data = subset(world,region %in% region.box))+
+    ### Polygon of country, catchment
+    ggplot2::geom_polygon(mapping = ggplot2::aes(long,lat,group=group),
+                 fill = color.fillBorder,
+                 color = color.colBorder)+
+    ### Station of interest
+    ggplot2::geom_point(data = xy_stations,
+               mapping = ggplot2::aes(x = long,
+                             y = lat,
+                             fill = fill.stat,
+                             size = size.signif),
+               color = "black",
+               stroke = 1,
+               shape = 21)+
     ### Scale
-    scale_fill_gradient2(midpoint = color.fill.midpoint,mid=color.fill.middle,high=color.fill.high,
-                         low=color.fill.low,limits=color.fill.lim,na.value = color.fill.na_Value)+
-    labs(size=title.size,fill=title.fill)+
+    ggplot2::scale_fill_gradient2(midpoint = color.fill.midpoint,
+                         mid = color.fill.middle,
+                         high = color.fill.high,
+                         low = color.fill.low,
+                         limits = color.fill.lim,
+                         na.value = color.fill.na_Value)+
+    ggplot2::labs(size=title.size,fill=title.fill)+
+    ggplot2::xlab("Longitude")+
+    ggplot2::ylab("Latitude")+
     ### Annotations
-    annotation_scale(location = "bl", width_hint = 0.4) +
-    annotation_north_arrow(location = "bl", which_north = "true",
-                           pad_x = unit(0.25, "in"), pad_y = unit(0.5, "in"),
-                           style = north_arrow_fancy_orienteering) +
-    theme_bw()+
-    theme(axis.text = element_text(size = axis.size.text))
+    ggplot2::theme_bw(base_size = theme.base_size)+
+    ggplot2::theme(axis.text = ggplot2::element_text(size = axis.size.text))
 
   return(plot.save)
 }
-
-
-
-
-
-
-
-
-
-
-
