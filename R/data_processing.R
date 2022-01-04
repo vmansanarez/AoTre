@@ -1,42 +1,41 @@
 
-
 ######################################################################
 #' @title Load and process data
-#' @description Read data from specified files and orgnaize it in the proper format for variable extraction.
+#' @description Read data from specified files and organize it in the proper format for variable extraction.
 #' @param datapath vector of character, path of the files to load.
-#' @param ind.catch vector of integer, index of files to read. By default (`ind.catch = NULL`), all files are read.
-#' @param NA.code vector of strings, codes of the NA values in the files to be read. Default value is `NA.code = "-99.000"`.
-#' @param sep.file character, the field separator character. For "white space" use `sep.file = ""`.
-#' See argument [sep] of [utils::read.table()] for more information.
-#' @param col.date vector of integer, the column number for year, month, day. If `length(col.date) == 1`,
-#' the column at the index `col.date` contains the year, the month and the day.
-#' @param col.val integer, the column number of the values to read in the files. By default (`col.val = 4`),
+#' @param ind.catch vector of integer, index of files to read. By default (\code{ind.catch = NULL}), all files are read.
+#' @param NA.code vector of strings, codes of the NA values in the files to be read. Default value is \code{NA.code = "-99.000"}.
+#' @param sep.file character, the field separator character. For "white space" use \code{sep.file = ""}.
+#' See argument \code{sep} of \code{\link[utils]{read.table}} for more information.
+#' @param col.date vector of integer, the column number for year, month, day. If \code{length(col.date) == 1},
+#' the column at the index \code{col.date} contains the year, the month and the day.
+#' @param col.val integer, the column number of the values to read in the files. By default (\code{col.val = 4}),
 #' the 4th column is considered as the column of values.
-#' @param col.extra vector of integer, the column number of the extra column to read. By default, no extra colmuns
-#' are read (`col.extra = NA`).
-#' @param header.files logical, indicate wheter the files contains or not the name of the variable as its first line.
-#' See argument [header] of [utils::read.table()] for more information.
-#' @param skip.lines integer, number of line to skip before reading the data in the file. See argument [skip] of
-#' [utils::read.table()] for more information.
-#' @param formatDate character string, format of the Date in the files. Only used when [col.date] has been specified and
-#' `length(col.date) == 1`. Specify the format of the date in the data. More details are available in description of
-#' argument [format] of [base::as.Date()].
-#' @param origin character string, wrap of argument [origin] of [base::as.Date()].
+#' @param col.extra vector of integer, the column number of the extra column to read. By default, no extra columns
+#' are read (\code{col.extra = NA}).
+#' @param header.files logical, indicate whether or not the files contains the name of the variable as its first line.
+#' See argument \code{header} of \code{\link[utils]{read.table}} for more information.
+#' @param skip.lines integer, number of line to skip before reading the data in the file. See argument \code{skip} of
+#' \code{\link[utils]{read.table}} for more information.
+#' @param formatDate character string, format of the Date in the files. Only used when \code{col.date} has been specified and
+#' \code{length(col.date) == 1}. Specify the format of the date in the data. More details are available in description of
+#' argument \code{format} of \code{\link[base]{as.Date}}.
+#' @param origin character string, wrap of argument \code{origin} of \code{\link[base]{as.Date}}.
 #' @param coord.get logical, indicate either or not some information contained in the files needs to be specifically
 #' read and saved.
-#' @param coord.skip.lines integer. Only used if [coord.get] is `TRUE`. It indicates the number of lines to skip at the
+#' @param coord.skip.lines integer. Only used if \code{coord.get} is \code{TRUE}. It indicates the number of lines to skip at the
 #' start of the file before reading the specific information.
-#' @param coord.col vector of integer of length 4. Only used if [coord.get] is `TRUE`. The function will read
-#' line `coord.skip.lines+1` (character separator is white space). Only columns with numeric values will be kept and
-#' among it only the 4 columns specified in [coord.col].
+#' @param coord.col vector of integer of length 4. Only used if \code{coord.get} is \code{TRUE}. The function will read
+#' line \code{coord.skip.lines+1} (character separator is white space). Only columns with numeric values will be kept and
+#' among it only the 4 columns specified in \code{coord.col}.
 #' @return a list of two objects (data, a unique data.tibble containing all
 #' the data grouped by file; info, a data.tibble with the file and matching groups)
 #' @examples
-#' read.timeSeries(datapath=datapath)
-#' read.timeSeries(datapath=datapath,ind.catch=1:51)
-#' read.timeSeries(datapath=datapath,ind.catch=c(1,9,14,5,80))
-#' read.timeSeries(datapath=datapath,,NA.code="-9999")
-#' read.timeSeries(datapath=datapath,,NA.code=c("-9999","-1"))
+#' readFiles.TS(datapath=datapath)
+#' readFiles.TS(datapath=datapath,ind.catch=1:51)
+#' readFiles.TS(datapath=datapath,ind.catch=c(1,9,14,5,80))
+#' readFiles.TS(datapath=datapath,,NA.code="-9999")
+#' readFiles.TS(datapath=datapath,,NA.code=c("-9999","-1"))
 #' @export
 readFiles.TS=function (datapath,
                        ind.catch = NULL,

@@ -72,14 +72,14 @@ FDC_lowvol=function(x){
 
 
 ######################################################################
-#' @title Extration of variable from a time serie
+#' @title Extraction of variable from a time series
 #' @description A specific variable is extracted from the data accordingly
 #'              to a provided classification of groups.
 #' @param data.station data object from the StatAnalysisTrend package, data from which to extract the variable of interest.
 #'        If provided, take over argument 'data.group' and 'data.values'.
 #' @param data.group data.frame or tbl, group(s) to consider in the extraction.
-#' @param data.values vector or dataframe/tbl of 1 column, values associated with the provided groups in argument'data.group".
-#' @param funct function, function to apply for extracting the variable from the value of the time serie.
+#' @param data.values vector or dataframe/tbl of 1 column, values associated with the provided groups in argument \code{data.group}.
+#' @param funct function, function to apply for extracting the variable from the value of the time series.
 #' @param timestep character, option on the type of aggregation on time to perform. Available:
 #' \enumerate{
 #'            \item 'year', variable is extracted for each year (default option)
@@ -89,20 +89,19 @@ FDC_lowvol=function(x){
 #'        Any other value for this argument will return an error message.
 #' @param period vector of character, date of start and of end of the period to considered in the data.
 #'        Imposed date format is "YYYY-mm-dd". Default option (period = NULL) is to considered all the
-#'        periods avalailable in the data.
-#' @param per.start character, allow to index years/months accotdingly to per.start (default: "01-01").
+#'        periods available in the data.
+#' @param per.start character, allow to index years/months accordingly to per.start (default: "01-01").
 #' @param pos.datetime integer, column number of the Date object in the provided groups. NA by default: No group of date provided.
 #' @param formatDate character string, format of the date column in the data
-#' @param ... arguments needed for the function provided through the argument "funct".
+#' @param ... arguments needed for the function provided through the argument \code{funct}.
 #' @return a list of two objects (data, a unique data.tibble containing all
 #' the data grouped by file;; info, a data.tibble with the file and matching groups)
 #' @details If there is a group of Date, argument 'pos.datetime" needs to be provided.
 #'        If not, it is assume that there are no Date object in the provided groups.
 #' @examples
-#' extract.Var(data.station=data)
-#' extract.Var(data.station=data,funct=min)
-#' extract.Var(data.station=data,funct=FDC_lowvol,period=c("1965-01-01","2020-01-01"))
-#' extract.Var(data.station=data,funct=f_FDC_x,probs.FDC=0.15)
+#' data(StationQ_3catch)
+#' extract.Var(data.station=StationQ_3catch,pos.datetime=1)
+#' extract.Var(data.station=StationQ_3catch,funct=min,pos.datetime=1)
 #' @importFrom lubridate %m+%
 #' @export
 extract.Var=function(data.station = NULL ## data already prepared. Assumed: last column is the value and previous ones are the groups

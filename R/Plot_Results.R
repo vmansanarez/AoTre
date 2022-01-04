@@ -1,14 +1,13 @@
 
-
 ######################################################################
 #' @title MAP results
 #' @description Function returning a map of the data in a specific region accordingly to the result of
 #'              a statistic. Each group is represented as a point fill by the result of the statistic of the test
 #'              and sized accordingly to the significativity of the test.
 #' @param data.plot dtbl, data tibble of the resultats to be plotted.
-#' @param data.colnames.settings vector of characters, names of the columns containing, in that order,
+#' @param colnames.settings vector of characters, names of the columns containing, in that order,
 #'        coordinates X and Y of the station, the group representing the station indexation, the pvalue
-#'         and the statistic at the station (data.colnames.settings = c("X_L2E","Y_L2E","group","p","stat")
+#'         and the statistic at the station (colnames.settings = c("Long","Lat","group","p","stat")
 #'         by default).
 #' @param size.point vector of integer, size of the point representing the result at the station,
 #'        first number for non significant results, seconf number for significant result (size.point = c(0.8,1)
@@ -28,13 +27,10 @@
 #' @param color.fill.na_Value character, color of the NA values (default: "green").
 #' @param title.size character, title of the legend associated with the size of the points
 #' @param title.fill character, title of the legend associated with the fill of the points.
-#' @param axis.size.text, integer, size of the text in the axis of the plot (default: 25).
-#'
+#' @param axis.size.text integer, size of the text in the axis of the plot (default: 25).
+#' @param theme.base_size integer, base size of the theme.
 #' @return a ggplot object
 #' @examples
-#' plot_map(data.plot=data2bePlotted)
-#' plot_map(data.plot=data2bePlotted,size.point=c(1,2))
-#' plot_map(data.plot=datapath,size.point=c(1,2),alpha.test=0.32)
 #' @export
 plot_map=function(data.plot,
                   ### colnames of X coords, Y coords, group (station), pvalue and stat

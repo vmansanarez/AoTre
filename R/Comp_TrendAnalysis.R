@@ -9,7 +9,8 @@
 #' @param DoDetrending logical, only used for dep.option == 'LTP' (default: TRUE).
 #' @return a dataframe, with the different statistics and values of interest of the test.
 #' @examples
-#' GeneralMannKendall.wrap(X=data.Var$value)
+#' GeneralMannKendall.wrap(X=1:100)
+#' GeneralMannKendall.wrap(X=rep(1,100))
 #' @export
 GeneralMannKendall.wrap=function(X,level=0.1,dep.option='INDE',DoDetrending=TRUE){
   ### Assume that the package BFunk is installed on the machine
