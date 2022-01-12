@@ -14,7 +14,7 @@ GeneralMannKendall.wrap(
 \arguments{
 \item{X}{data (vector). IMPORTANT: it assumes that X is regularly-spaced.}
 
-\item{level}{real, between 0 and 1, level of the test (default: 0.1).}
+\item{level}{numeric, between 0 and 1, level of the test (default: 0.1).}
 
 \item{dep.option}{dependency option, option for handling temporal dependence (default 'INDE' for independence).}
 
