@@ -6,12 +6,12 @@
 \usage{
 plot_map(
   data.plot,
-  data.colnames.settings = c("X_L2E", "Y_L2E", "group", "p", "stat"),
+  colnames.settings = c("Long", "Lat", "group1", "p", "stat"),
   size.point = c(0.8, 1),
   alpha.test = 0.05,
   region.box = "France",
-  crs.coords.sf = "EPSG:27572",
-  agr.coords.sf = "constant",
+  color.colBorder = "black",
+  color.fillBorder = NA,
   color.fill.low = "#053061",
   color.fill.middle = "#f7f7f7",
   color.fill.high = "#67001f",
@@ -20,15 +20,15 @@ plot_map(
   color.fill.na_Value = "green",
   title.size = "Significant?",
   title.fill = "Statistic",
-  axis.size.text = 25
+  axis.size.text = 25,
 )
 }
 \arguments{
 \item{data.plot}{dtbl, data tibble of the resultats to be plotted.}
 
-\item{data.colnames.settings}{vector of characters, names of the columns containing, in that order,
+\item{colnames.settings}{vector of characters, names of the columns containing, in that order,
 coordinates X and Y of the station, the group representing the station indexation, the pvalue
-and the statistic at the station (data.colnames.settings = c("X_L2E","Y_L2E","group","p","stat")
+and the statistic at the station (colnames.settings = c("Long","Lat","group","p","stat")
 by default).}
 
 \item{size.point}{vector of integer, size of the point representing the result at the station,
@@ -39,11 +39,6 @@ by default).}
 from the data (alpha.test = 0.05 by default);}
 
 \item{region.box}{character, Region to zoom in the final plot (default: "France").}
-
-\item{crs.coords.sf}{character, projection system of the coordinates (default: "EPSG:27572").}
-
-\item{agr.coords.sf}{character, attribute-geometry-relationship (default: "constant"). See documentation of
-the function sf::st_sf() for more information on it.}
 
 \item{color.fill.low}{character, color of the lower bound of the statistic (default: "#053061", for red color).}
 
@@ -62,7 +57,14 @@ In case a value of the statistic is outside the bounds, it will take the color o
 
 \item{title.fill}{character, title of the legend associated with the fill of the points.}
 
-\item{axis.size.text, }{integer, size of the text in the axis of the plot (default: 25).}
+\item{axis.size.text}{integer, size of the text in the axis of the plot (default: 25).}
+
+\item{theme.base_size}{integer, base size of the theme.}
+
+\item{crs.coords.sf}{character, projection system of the coordinates (default: "EPSG:27572").}
+
+\item{agr.coords.sf}{character, attribute-geometry-relationship (default: "constant"). See documentation of
+the function sf::st_sf() for more information on it.}
 }
 \value{
 a ggplot object
@@ -71,9 +73,4 @@ a ggplot object
 Function returning a map of the data in a specific region accordingly to the result of
 a statistic. Each group is represented as a point fill by the result of the statistic of the test
 and sized accordingly to the significativity of the test.
-}
-\examples{
-plot_map(data.plot=data2bePlotted)
-plot_map(data.plot=data2bePlotted,size.point=c(1,2))
-plot_map(data.plot=datapath,size.point=c(1,2),alpha.test=0.32)
 }
