@@ -1,13 +1,15 @@
 
-######################################################################
+################################################################################
 #' @title  Cumulative frequency curve at a specific percentile
-#' @description Function to compute the Cumulative frequency Curve of a time serie at
-#'              a specific occurrence probability. In Hydrology, the cumulative frequency curve
-#'              of a Discharge time serie is called "Flow Duration curve".
+#' @description Function to compute the Cumulative frequency Curve of a time
+#'              serie at a specific occurrence probability. In Hydrology, the
+#'              cumulative frequency curve of a Discharge time serie is called
+#'              "Flow Duration curve".
 #' @param x a vector of real, value of the time series.
-#' @param probs.FDC a real, between 0 and 1. Specific probability of occurence of the Cumulative
-#'        frequency curve (default: "0.1).
-#' @return a real, value corresponding to the Cumulative frequency curve at the probalbility probs.FDC
+#' @param probs.FDC a real, between 0 and 1. Specific probability of occurence
+#' of the Cumulative frequency curve (default: "0.1).
+#' @return a real, value corresponding to the Cumulative frequency curve at the
+#' probalbility probs.FDC
 #' @examples
 #' vect.Q= exp(seq(from = 0.01,to = 2,by = 0.01))
 #' f_FDC_x(x=vect.Q)
@@ -27,9 +29,11 @@ f_FDC_x=function(x,probs.FDC=0.1){
     x.ord.ind=order(x,decreasing = TRUE,na.last = TRUE)
     # Compute length of non Na values and
     n.end=length(x)-length(which(is.na(x[x.ord.ind])))
-    # select only non Na value and accoiate empiricall probability of occurences.
+    # Select only non Na value and calculate respective empirical probabilities
+    # of occurences.
     data.fdc=data.frame(x=x[x.ord.ind][1:n.end],probs=(1:n.end)/n.end)
-    # Remove all duplicates to set the same proba of occurences to each duplicated value
+    # Remove all duplicates to set the same proba of occurences to each
+    # duplicated value
     dt.plot.fdc=data.fdc[!duplicated(data.fdc[,"x"]),]
 
 
@@ -48,20 +52,22 @@ f_FDC_x=function(x,probs.FDC=0.1){
 }
 
 
-######################################################################
+################################################################################
 #' @title Volume deficit
-#' @description Function to compute the variable "Volume deficit": sum of differences
-## between the values of the time series and the cumulative frequency curve
-## (probability of occurence against value) at the percentile 0.15.
+#' @description Function to compute the variable "Volume deficit": sum of
+#' differences between the values of the time series and the cumulative
+#' frequency curve (probability of occurence against value) at the percentile
+#' 0.15.
 #' @param x a vector of real, value of the time series.
-#' @return a real, number corresponding to the value of the FDC at the probalbility probs.FDC
+#' @return a real, number corresponding to the value of the FDC at the
+#' probability probs.FDC
 #' @examples
 #' vect.Q= exp(seq(from = 0.01,to = 2,by = 0.01))
 #' FDC_lowvol(x=vect.Q)
 #' @export
 FDC_lowvol=function(x){
   ## Volume deficit: difference between the actual flow and the FDC threshold
-  # for value below
+  # for values below
   FDC.threshold=f_FDC_x(x,probs.FDC=0.15)
 
   ind.below=which(x<FDC.threshold)
@@ -75,46 +81,55 @@ FDC_lowvol=function(x){
 #' @title Extraction of variable from a time series
 #' @description A specific variable is extracted from the data accordingly
 #'              to a provided classification of groups.
-#' @param data.station data object from the StatAnalysisTrend package, data from which to extract the variable of interest.
-#'        If provided, take over argument 'data.group' and 'data.values'.
+#' @param data.station data object from the StatAnalysisTrend package, data from
+#' which to extract the variable of interest. If provided, take over argument
+#' 'data.group' and 'data.values'.
 #' @param data.group data.frame or tbl, group(s) to consider in the extraction.
-#' @param data.values vector or dataframe/tbl of 1 column, values associated with the provided groups in argument \code{data.group}.
-#' @param funct function, function to apply for extracting the variable from the value of the time series.
-#' @param timestep character, option on the type of aggregation on time to perform. Available:
+#' @param data.values vector or dataframe/tbl of 1 column, values associated
+#' with the provided groups in argument \code{data.group}.
+#' @param funct function, function to apply for extracting the variable from the
+#' value of the time series.
+#' @param timestep character, option on the type of aggregation on time to
+#' perform. Available:
 #' \enumerate{
 #'            \item 'year', variable is extracted for each year (default option)
 #'            \item 'month', variable is extracted for each months
 #'            \item 'None', no aggregation on time is considered
 #'            }
 #'        Any other value for this argument will return an error message.
-#' @param period vector of character, date of start and of end of the period to considered in the data.
-#'        Imposed date format is "YYYY-mm-dd". Default option (period = NULL) is to considered all the
-#'        periods available in the data.
-#' @param per.start character, allow to index years/months accordingly to per.start (default: "01-01").
-#' @param pos.datetime integer, column number of the Date object in the provided groups. NA by default: No group of date provided.
+#' @param period vector of character, date of start and of end of the period to
+#' considered in the data. Imposed date format is "YYYY-mm-dd". Default option
+#' (period = NULL) is to considered all the periods available in the data.
+#' @param per.start character, allow to index years/months accordingly to
+#' per.start (default: "01-01").
+#' @param pos.datetime integer, column number of the Date object in the provided
+#' groups. NA by default: No group of date provided.
 #' @param formatDate character string, format of the date column in the data
-#' @param ... arguments needed for the function provided through the argument \code{funct}.
-#' @return a list of two objects (data, a unique data.tibble containing all
-#' the data grouped by file;; info, a data.tibble with the file and matching groups)
-#' @details If there is a group of Date, argument 'pos.datetime" needs to be provided.
-#'        If not, it is assume that there are no Date object in the provided groups.
+#' @param ... arguments needed for the function provided through the argument
+#' \code{funct}.
+#' @return a list of two objects (data, a unique data.tibble containing all the
+#' data grouped by file;; info, a data.tibble with the file and matching groups)
+#' @details If there is a group of Date, argument 'pos.datetime" needs to be
+#' provided. If not, it is assume that there are no Date object in the provided
+#' groups.
 #' @examples
 #' data(StationQ_3catch)
 #' extract.Var(data.station=StationQ_3catch,pos.datetime=1)
 #' extract.Var(data.station=StationQ_3catch,funct=min,pos.datetime=1)
 #' @importFrom lubridate %m+%
 #' @export
-extract.Var=function(data.station = NULL ## data already prepared. Assumed: last column is the value and previous ones are the groups
-                         ,data.group = NULL ## Data with the different groups
-                         ,data.values = NULL ## Data with the corresponding values for each groups (hyp. Same index)
-                         ,funct=max
-                         ,timestep="year"
-                         ,period=NULL
-                         ,per.start="01-01"
-                         ### settings if working with datetime
-                         ,pos.datetime=NA
-                         ,formatDate="%Y-%m-%d"
-                         ,...){
+extract.Var=function(data.station = NULL # data already prepared.
+                     ,data.group = NULL # Data with the different groups.
+                     ,data.values = NULL # Data with the values for each
+                     # respective groups (hyp. Same index).
+                     ,funct=max
+                     ,timestep="year"
+                     ,period=NULL
+                     ,per.start="01-01"
+                     ### settings if working with datetime
+                     ,pos.datetime=NA
+                     ,formatDate="%Y-%m-%d"
+                     ,...){
 
   ############################################
   ############################################
@@ -196,7 +211,8 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
                                                 format="%Y-%m-%d"))
       }else if(formatDate == "%Y"){
         data.all=dplyr::mutate(.data=data.all,
-                               datetime=as.Date(x = paste(datetime,"01","01",sep="-"),
+                               datetime=as.Date(x = paste(datetime,"01","01",
+                                                          sep="-"),
                                                 format="%Y-%m-%d"))
       }else{
         stop("ARGUMENT ERROR:'extract.Var': wrong 'formatDate' argument!")
@@ -209,18 +225,15 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
   if(is.null(period)){
     ### Nothing to do, whole period is considered
   }else{
-    ### Check validity of period argument: vector of 2 character, format = "YYYY-mm-dd"
-    # To be done
+    ### Check validity of period argument: vector of 2 character, format =
+    # "YYYY-mm-dd"
+    # To be done?
 
-    ### Grouped the data by all columns that are factor, id est the "group" columns
+    ### Grouped the data by all columns that are factor, = the "group" columns
     data.all.tmp.grouped = dplyr::group_by(.data = data.all,
                                            dplyr::across(where(is.factor)))
 
     ### Filter data: only the wanted period is kept
-    # data.all.sel.group = filter(.data = data.all.tmp.grouped, datetime > period[1] & datetime < period[2])
-
-
-
     data.all.sel.group = dplyr::filter(.data = data.all.tmp.grouped,
                                        datetime  <= period[2])
 
@@ -233,9 +246,11 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
   }
 
   ############################################
-  ### Mutate function used to convert a column without adding a new one (avoid using temporary memory)
+  ### Mutate function used to convert a column without adding a new one (avoid
+  # using temporary memory)
 
-  ### Allow to do yearly, monthly grouping. Also allow to not compute a function per group of time
+  ### Allow to do yearly, monthly grouping. Also allow to not compute a function
+  # per group of time.
   if(timestep=="year"){
 
     ### column of date is grouped by years
@@ -263,7 +278,6 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
                                                     per.start=per.start))
     }
 
-    # data.all.grTime=data.all %>% mutate(datetime=factor(as.numeric(format(datetime, format="%Y"))))
   }else if(timestep=="month"){
 
     ### column of date is grouped by months, independently of the year and day
@@ -275,14 +289,17 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
       per.start.tmp=as.numeric(per.start)
       if(!is.na(per.start.tmp)){
         if(per.start.tmp<28){
-          #right start of the month. Starting between 28th and 31st won't work for some months
+          # Right start of the month. Starting between 28th and 31st won't work
+          # for some months.
 
           ### Local function to index Months accordingly to per.start
           f.data.start.Month=function(x.date,per.start){
             ### Catch months of dates
             n.month=as.numeric(format(x.date, format="%m"))
-            start.date=as.Date(paste(2004, n.month,per.start,sep="-"),format="%Y-%m-%d") %m+% months(-1)
-            end.date=as.Date(paste(2004, n.month,per.start,sep="-"),format="%Y-%m-%d")-1
+            start.date=as.Date(paste(2004, n.month,per.start,sep="-"),
+                               format="%Y-%m-%d") %m+% months(-1)
+            end.date=as.Date(paste(2004, n.month,per.start,sep="-"),
+                             format="%Y-%m-%d")-1
             if(dplyr::between(x.date,start.date,end.date)){
               res.ind=format(x.date, format="%m")
             }else{
@@ -297,13 +314,13 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
                                                         ,per.start=per.start))
 
         }else{
-          stop("ARGUMENT ERROR:'extract.Var': incoherence between 'per.start' and 'timestep'!")
+          stop("'extract.Var': ARGUMENT ERROR between 'per.start' & 'timestep'!")
         }
       }else{
-        stop("ARGUMENT ERROR:'extract.Var': incoherence between 'per.start' and 'timestep'!")
+        stop("'extract.Var': ARGUMENT ERROR between 'per.start' & 'timestep'!")
       }
     }else{
-      stop("ARGUMENT ERROR:'extract.Var': wrong argument 'per.start' for timestep = 'month'")
+      stop("'extract.Var': ARGUMENT ERROR, 'per.start' for timestep = 'month'")
     }
 
   }else if(timestep=="year-month"){
@@ -317,15 +334,18 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
       per.start.tmp=as.numeric(per.start)
       if(!is.na(per.start.tmp)){
         if(per.start.tmp<28){
-          #right start of the month. Starting between 28th and 31st won't work for some months
+          # Right start of the month. Starting between 28th and 31st won't work
+          # for some months
 
           ### Local function to index Months accordingly to per.start
           f.data.start.Month=function(x.date,per.start){
             ### Catch year and months of dates
             n.year=as.numeric(format(x.date, format="%Y"))
             n.month=as.numeric(format(x.date, format="%m"))
-            start.date=as.Date(paste(n.year, n.month,per.start,sep="-"),format="%Y-%m-%d") %m+% months(-1)
-            end.date=as.Date(paste(n.year, n.month,per.start,sep="-"),format="%Y-%m-%d")-1
+            start.date=as.Date(paste(n.year, n.month,per.start,sep="-"),
+                               format="%Y-%m-%d") %m+% months(-1)
+            end.date=as.Date(paste(n.year, n.month,per.start,sep="-"),
+                             format="%Y-%m-%d")-1
             if(dplyr::between(x.date,start.date,end.date)){
               res.ind=format(x.date, format="%Y-%m")
             }else{
@@ -340,13 +360,13 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
                                                         ,per.start=per.start))
 
         }else{
-          stop("ARGUMENT ERROR:'extract.Var': incoherence between 'per.start' and 'timestep'!")
+          stop("'extract.Var': ARGUMENT ERROR between 'per.start' & 'timestep'!")
         }
       }else{
-        stop("ARGUMENT ERROR:'extract.Var': incoherence between 'per.start' and 'timestep'!")
+        stop("'extract.Var': ARGUMENT ERROR between 'per.start' & 'timestep'!")
       }
     }else{
-      stop("ARGUMENT ERROR:'extract.Var': wrong argument 'per.start' for timestep = 'month'")
+      stop("'extract.Var': ARGUMENT ERROR, 'per.start' for timestep = 'month'")
     }
 
   }else if(timestep=="Station"){
@@ -355,7 +375,7 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
     if(n.group==1){
       data.all.grTime=data.all
     }else{
-      stop("extract.Var: error with option 'Station' of argument 'timestep': only one group needed in data.")
+      stop("extract.Var: ERROR, 'timestep = Station': only one group needed.")
     }
   }else if(timestep=="None"){
     ### No grouping
@@ -364,8 +384,8 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
     stop("extract.Var: wrong timestep argument value")
   }
 
-  ### Group data by all columns except column of values (setdiff function remove the column 'values' from
-  # the list of names of the columns to group)
+  ### Group data by all columns except column of values (setdiff function remove
+  # the column 'values' from the list of names of the columns to group)
   data.extract.step1= dplyr::group_by_at(.tbl=data.all.grTime,
                                          .vars = dplyr::setdiff(names(data.all.grTime),
                                                                 "values"))
@@ -375,8 +395,8 @@ extract.Var=function(data.station = NULL ## data already prepared. Assumed: last
                                     .funs = funct,
                                     ...)
 
-  ### Replace -Inf and Inf values by NA. Some primitive function (like max()) return -Inf (or Inf for min function)
-  # when all data are NA.
+  ### Replace -Inf and Inf values by NA. Some primitive function (like max())
+  # return -Inf (or Inf for min function) when all data are NA.
   data.extract = dplyr::mutate(.data = data.extract,
                                values = replace(values, is.infinite(values), NA))
 
