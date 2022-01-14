@@ -18,16 +18,20 @@ extract.Var(
 )
 }
 \arguments{
-\item{data.station}{data object from the StatAnalysisTrend package, data from which to extract the variable of interest.
-If provided, take over argument 'data.group' and 'data.values'.}
+\item{data.station}{data object from the StatAnalysisTrend package, data from
+which to extract the variable of interest. If provided, take over argument
+'data.group' and 'data.values'.}
 
 \item{data.group}{data.frame or tbl, group(s) to consider in the extraction.}
 
-\item{data.values}{vector or dataframe/tbl of 1 column, values associated with the provided groups in argument \code{data.group}.}
+\item{data.values}{vector or dataframe/tbl of 1 column, values associated
+with the provided groups in argument \code{data.group}.}
 
-\item{funct}{function, function to apply for extracting the variable from the value of the time series.}
+\item{funct}{function, function to apply for extracting the variable from the
+value of the time series.}
 
-\item{timestep}{character, option on the type of aggregation on time to perform. Available:
+\item{timestep}{character, option on the type of aggregation on time to
+perform. Available:
 \enumerate{
 \item 'year', variable is extracted for each year (default option)
 \item 'month', variable is extracted for each months
@@ -35,29 +39,33 @@ If provided, take over argument 'data.group' and 'data.values'.}
 }
 Any other value for this argument will return an error message.}
 
-\item{period}{vector of character, date of start and of end of the period to considered in the data.
-Imposed date format is "YYYY-mm-dd". Default option (period = NULL) is to considered all the
-periods available in the data.}
+\item{period}{vector of character, date of start and of end of the period to
+considered in the data. Imposed date format is "YYYY-mm-dd". Default option
+(period = NULL) is to considered all the periods available in the data.}
 
-\item{per.start}{character, allow to index years/months accordingly to per.start (default: "01-01").}
+\item{per.start}{character, allow to index years/months accordingly to
+per.start (default: "01-01").}
 
-\item{pos.datetime}{integer, column number of the Date object in the provided groups. NA by default: No group of date provided.}
+\item{pos.datetime}{integer, column number of the Date object in the provided
+groups. NA by default: No group of date provided.}
 
 \item{formatDate}{character string, format of the date column in the data}
 
-\item{...}{arguments needed for the function provided through the argument \code{funct}.}
+\item{...}{arguments needed for the function provided through the argument
+\code{funct}.}
 }
 \value{
-a list of two objects (data, a unique data.tibble containing all
-the data grouped by file;; info, a data.tibble with the file and matching groups)
+a list of two objects (data, a unique data.tibble containing all the
+data grouped by file;; info, a data.tibble with the file and matching groups)
 }
 \description{
 A specific variable is extracted from the data accordingly
 to a provided classification of groups.
 }
 \details{
-If there is a group of Date, argument 'pos.datetime" needs to be provided.
-If not, it is assume that there are no Date object in the provided groups.
+If there is a group of Date, argument 'pos.datetime" needs to be
+provided. If not, it is assume that there are no Date object in the provided
+groups.
 }
 \examples{
 data(StationQ_3catch)

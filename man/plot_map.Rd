@@ -21,56 +21,72 @@ plot_map(
   title.size = "Significant?",
   title.fill = "Statistic",
   axis.size.text = 25,
+  theme.base_size = 20,
+  p.FDR = FALSE
 )
 }
 \arguments{
 \item{data.plot}{dtbl, data tibble of the resultats to be plotted.}
 
-\item{colnames.settings}{vector of characters, names of the columns containing, in that order,
-coordinates X and Y of the station, the group representing the station indexation, the pvalue
-and the statistic at the station (colnames.settings = c("Long","Lat","group","p","stat")
-by default).}
+\item{colnames.settings}{vector of characters, names of the columns
+containing, in that order, coordinates X and Y of the station, the group
+representing the station indexation, the p value and the statistic at the
+station (colnames.settings = c("Long","Lat","group","p","stat") by default).}
 
-\item{size.point}{vector of integer, size of the point representing the result at the station,
-first number for non significant results, seconf number for significant result (size.point = c(0.8,1)
-by default).}
+\item{size.point}{vector of integer, size of the point representing the
+result at the station, first number for non significant results, seconf
+number for significant result (size.point = c(0.8,1) by default).}
 
-\item{alpha.test}{real, significant level used in the Mann-Kendall test realized and matching with the results
-from the data (alpha.test = 0.05 by default);}
+\item{alpha.test}{real, significant level used in the Mann-Kendall test
+realized and matching with the results from the data (alpha.test = 0.05 by
+default);}
 
-\item{region.box}{character, Region to zoom in the final plot (default: "France").}
+\item{region.box}{character, Region to zoom in the final plot (default:
+"France").}
 
-\item{color.fill.low}{character, color of the lower bound of the statistic (default: "#053061", for red color).}
+\item{color.colBorder}{character string, color of the border of the region
+layout. It is "black" by default.}
 
-\item{color.fill.middle}{character, color of the middle of the statistic (default: "#f7f7f7", for white color).}
+\item{color.fillBorder}{character string, color of the fill of the region}
 
-\item{color.fill.high}{character, color of the higher bound of the statistic (default: "#67001f", for blue color).}
+\item{color.fill.low}{character, color of the lower bound of the statistic
+(default: "#053061", for red color).}
 
-\item{color.fill.midpoint}{real, value corresponding to the middle of the statistic (default: "#67001f", for blue color).}
+\item{color.fill.middle}{character, color of the middle of the statistic
+(default: "#f7f7f7", for white color).}
 
-\item{color.fill.lim}{vector of real, values of the lower and the higher bounds of the statistic (default: c(-4,4)).
-In case a value of the statistic is outside the bounds, it will take the color of the closest bound.}
+\item{color.fill.high}{character, color of the higher bound of the statistic
+(default: "#67001f", for blue color).}
 
-\item{color.fill.na_Value}{character, color of the NA values (default: "green").}
+\item{color.fill.midpoint}{real, value corresponding to the middle of the
+statistic (default: "#67001f", for blue color).}
 
-\item{title.size}{character, title of the legend associated with the size of the points}
+\item{color.fill.lim}{vector of real, values of the lower and the higher
+bounds of the statistic (default: c(-4,4)). In case a value of the statistic
+is outside the bounds, it will take the color of the closest bound.}
 
-\item{title.fill}{character, title of the legend associated with the fill of the points.}
+\item{color.fill.na_Value}{character, color of the NA values (default:
+"green").}
 
-\item{axis.size.text}{integer, size of the text in the axis of the plot (default: 25).}
+\item{title.size}{character, title of the legend associated with the size of
+the points.}
+
+\item{title.fill}{character, title of the legend associated with the fill of
+the points.}
+
+\item{axis.size.text}{integer, size of the text in the axis of the plot
+(default: 25).}
 
 \item{theme.base_size}{integer, base size of the theme.}
 
-\item{crs.coords.sf}{character, projection system of the coordinates (default: "EPSG:27572").}
-
-\item{agr.coords.sf}{character, attribute-geometry-relationship (default: "constant"). See documentation of
-the function sf::st_sf() for more information on it.}
+\item{p.FDR}{logical, TRUE is FDR results are given.}
 }
 \value{
 a ggplot object
 }
 \description{
-Function returning a map of the data in a specific region accordingly to the result of
-a statistic. Each group is represented as a point fill by the result of the statistic of the test
-and sized accordingly to the significativity of the test.
+Function returning a map of the data in a specific region
+accordingly to the result of a statistic. Each group is represented as a
+point filled by the result of the statistic of the test and sized accordingly
+to the significativity of the test.
 }

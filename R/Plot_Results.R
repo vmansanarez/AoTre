@@ -18,6 +18,9 @@
 #' default);
 #' @param region.box character, Region to zoom in the final plot (default:
 #' "France").
+#' @param color.colBorder character string, color of the border of the region
+#' layout. It is "black" by default.
+#' @param color.fillBorder character string, color of the fill of the region
 #' @param color.fill.low character, color of the lower bound of the statistic
 #' (default: "#053061", for red color).
 #' @param color.fill.middle character, color of the middle of the statistic
@@ -38,8 +41,8 @@
 #' @param axis.size.text integer, size of the text in the axis of the plot
 #' (default: 25).
 #' @param theme.base_size integer, base size of the theme.
+#' @param p.FDR logical, TRUE is FDR results are given.
 #' @return a ggplot object
-#' @examples
 #' @export
 plot_map=function(data.plot,
                   ### colnames of X coords, Y coords, group (station), pvalue
@@ -65,7 +68,8 @@ plot_map=function(data.plot,
                   title.fill = "Statistic",
                   #### Setting plot
                   axis.size.text=25,
-                  theme.base_size = 20){
+                  theme.base_size = 20,
+                  p.FDR=FALSE){
 
   world <- ggplot2::map_data(map = "world")
 
@@ -80,7 +84,13 @@ plot_map=function(data.plot,
     return(ifelse(x<=alpha,size.point[2],size.point[1]))
   }
   ### alpha As an argument
-  xy_stations$size.signif=sapply(xy_stations$p,f_sign.size,alpha=alpha.test)
+  if(p.FDR){
+    xy_stations$size.signif=sapply(xy_stations$p-data.plot$p.FDR,
+                                   f_sign.size,alpha=0)
+  }else{
+    xy_stations$size.signif=sapply(xy_stations$p,f_sign.size,alpha=alpha.test)
+  }
+
 
   ###
   xy_stations$fill.stat=xy_stations$stat

@@ -24,55 +24,60 @@ readFiles.TS(
 \arguments{
 \item{datapath}{vector of character, path of the files to load.}
 
-\item{ind.catch}{vector of integer, index of files to read. By default (\code{ind.catch = NULL}), all files are read.}
+\item{ind.catch}{vector of integer, index of files to read. By default
+(\code{ind.catch = NULL}), all files are read.}
 
-\item{NA.code}{vector of strings, codes of the NA values in the files to be read. Default value is \code{NA.code = "-99.000"}.}
+\item{NA.code}{vector of strings, codes of the NA values in the files to be
+read. Default value is \code{NA.code = "-99.000"}.}
 
-\item{sep.file}{character, the field separator character. For "white space" use \code{sep.file = ""}.
-See argument \code{sep} of \code{\link[utils]{read.table}} for more information.}
-
-\item{col.date}{vector of integer, the column number for year, month, day. If \code{length(col.date) == 1},
-the column at the index \code{col.date} contains the year, the month and the day.}
-
-\item{col.val}{integer, the column number of the values to read in the files. By default (\code{col.val = 4}),
-the 4th column is considered as the column of values.}
-
-\item{col.extra}{vector of integer, the column number of the extra column to read. By default, no extra columns
-are read (\code{col.extra = NA}).}
-
-\item{header.files}{logical, indicate whether or not the files contains the name of the variable as its first line.
-See argument \code{header} of \code{\link[utils]{read.table}} for more information.}
-
-\item{skip.lines}{integer, number of line to skip before reading the data in the file. See argument \code{skip} of
+\item{sep.file}{character, the field separator character. For "white space"
+use \code{sep.file = ""}. See argument \code{sep} of
 \code{\link[utils]{read.table}} for more information.}
 
-\item{formatDate}{character string, format of the Date in the files. Only used when \code{col.date} has been specified and
-\code{length(col.date) == 1}. Specify the format of the date in the data. More details are available in description of
-argument \code{format} of \code{\link[base]{as.Date}}.}
+\item{col.date}{vector of integer, the column number for year, month, day.
+If \code{length(col.date) == 1}, the column at the index \code{col.date}
+contains the year, the month and the day.}
 
-\item{origin}{character string, wrap of argument \code{origin} of \code{\link[base]{as.Date}}.}
+\item{col.val}{integer, the column number of the values to read in the files.
+By default (\code{col.val = 4}), the 4th column is considered as the column
+of values.}
 
-\item{coord.get}{logical, indicate either or not some information contained in the files needs to be specifically
-read and saved.}
+\item{col.extra}{vector of integer, the column number of the extra column to
+read. By default, no extra columns are read (\code{col.extra = NA}).}
 
-\item{coord.skip.lines}{integer. Only used if \code{coord.get} is \code{TRUE}. It indicates the number of lines to skip at the
-start of the file before reading the specific information.}
+\item{header.files}{logical, indicate whether or not the files contains the
+name of the variable as its first line.See argument \code{header} of
+\code{\link[utils]{read.table}} for more information.}
 
-\item{coord.col}{vector of integer of length 4. Only used if \code{coord.get} is \code{TRUE}. The function will read
-line \code{coord.skip.lines+1} (character separator is white space). Only columns with numeric values will be kept and
-among it only the 4 columns specified in \code{coord.col}.}
+\item{skip.lines}{integer, number of line to skip before reading the data in
+the file. See argument \code{skip} of \code{\link[utils]{read.table}} for
+more information.}
+
+\item{formatDate}{character string, format of Dates in the files. Only used
+when \code{col.date} has been specified and \code{length(col.date) == 1}.
+Specify the format of the date in the data. More details are available in
+description of argument \code{format} of \code{\link[base]{as.Date}}.}
+
+\item{origin}{character string, wrap of argument \code{origin} of
+\code{\link[base]{as.Date}}.}
+
+\item{coord.get}{logical, indicate either or not some information contained
+in the files needs to be specifically read and saved.}
+
+\item{coord.skip.lines}{integer. Only used if \code{coord.get} is
+\code{TRUE}. It indicates the number of lines to skip at the start of the
+file before reading the specific information.}
+
+\item{coord.col}{vector of integer of length 4. Only used if \code{coord.get}
+is \code{TRUE}. The function will read line \code{coord.skip.lines+1}
+(character separator is white space). Only columns with numeric values will
+be kept and mong it only the 4 columns specified in \code{coord.col}.}
 }
 \value{
-a list of two objects (data, a unique data.tibble containing all
-the data grouped by file; info, a data.tibble with the file and matching groups)
+a list of two objects (data, a data.tibble containing all the data
+grouped by file; info, a data.tibble with the file and matching groups)
 }
 \description{
-Read data from specified files and organize it in the proper format for variable extraction.
-}
-\examples{
-readFiles.TS(datapath=datapath)
-readFiles.TS(datapath=datapath,ind.catch=1:51)
-readFiles.TS(datapath=datapath,ind.catch=c(1,9,14,5,80))
-readFiles.TS(datapath=datapath,,NA.code="-9999")
-readFiles.TS(datapath=datapath,,NA.code=c("-9999","-1"))
+Read data from specified files and organize it in the proper
+format for variable extraction.
 }

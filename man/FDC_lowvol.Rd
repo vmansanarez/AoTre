@@ -10,10 +10,14 @@ FDC_lowvol(x)
 \item{x}{a vector of real, value of the time series.}
 }
 \value{
-a real, number corresponding to the value of the FDC at the probalbility probs.FDC
+a real, number corresponding to the value of the FDC at the
+probability probs.FDC
 }
 \description{
-Function to compute the variable "Volume deficit": sum of differences
+Function to compute the variable "Volume deficit": sum of
+differences between the values of the time series and the cumulative
+frequency curve (probability of occurence against value) at the percentile
+0.15.
 }
 \examples{
 vect.Q= exp(seq(from = 0.01,to = 2,by = 0.01))

@@ -9,16 +9,18 @@ f_FDC_x(x, probs.FDC = 0.1)
 \arguments{
 \item{x}{a vector of real, value of the time series.}
 
-\item{probs.FDC}{a real, between 0 and 1. Specific probability of occurence of the Cumulative
-frequency curve (default: "0.1).}
+\item{probs.FDC}{a real, between 0 and 1. Specific probability of occurence
+of the Cumulative frequency curve (default: "0.1).}
 }
 \value{
-a real, value corresponding to the Cumulative frequency curve at the probalbility probs.FDC
+a real, value corresponding to the Cumulative frequency curve at the
+probalbility probs.FDC
 }
 \description{
-Function to compute the Cumulative frequency Curve of a time serie at
-a specific occurrence probability. In Hydrology, the cumulative frequency curve
-of a Discharge time serie is called "Flow Duration curve".
+Function to compute the Cumulative frequency Curve of a time
+serie at a specific occurrence probability. In Hydrology, the
+cumulative frequency curve of a Discharge time serie is called
+"Flow Duration curve".
 }
 \examples{
 vect.Q= exp(seq(from = 0.01,to = 2,by = 0.01))

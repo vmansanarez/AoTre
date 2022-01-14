@@ -2,8 +2,7 @@
 
 ################################################################################
 #' @title Mann-Kendall trend analysis
-#' @description Apply the GeneralMannKendall function from BFunk package to the
-#' serie X.
+#' @description Apply the generalMannKendall function to the serie X.
 #' @param X data (vector). IMPORTANT: it assumes that X is regularly-spaced.
 #' @param level numeric, between 0 and 1, level of the test (default: 0.1).
 #' @param dep.option dependency option, option for handling temporal dependence
@@ -21,7 +20,7 @@ GeneralMannKendall.wrap=function(X,level=0.1
                                  ,DoDetrending=TRUE){
   ### Assume that the package BFunk is installed on the machine
   ### Apply the Mann Kendall test on vector X
-  res.test=BFunk::generalMannKendall(X = X,level=level,dep.option=dep.option,DoDetrending=DoDetrending)
+  res.test=generalMannKendall(X = X,level=level,dep.option=dep.option,DoDetrending=DoDetrending)
   ### Results to be returned, remove H and Dep as can be computed back from p, the p-value
   data.tmp=data.frame(p=res.test$P,stat=res.test$STAT,trend=res.test$TREND)
   return(list(data.tmp))
@@ -43,6 +42,7 @@ GeneralMannKendall.wrap=function(X,level=0.1
 #' @param do.pval_FDR logical, TRUE if the p-value accounts for the field
 #' significance using the false detection rate (FDR) approach.
 #' @param level.FDR numeric between 0 and 1, level used in the FDR approach
+#' @param ... other arguments passed to function \code{funct.stat}.
 #' @return a dataframe, with the different results of the trend analysis.
 #' @export
 Estimate.stats=function(data.extract
@@ -91,6 +91,10 @@ Estimate.stats=function(data.extract
 
   if(!is.null(list.stats)){
     data.final$station=list.stats
+  }
+
+  if(do.pval_FDR){
+    data.final$p.FDR=fieldSignificance_FDR(data.final$p,level=level.FDR)
   }
 
   return(data.final)

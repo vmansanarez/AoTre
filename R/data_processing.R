@@ -42,12 +42,7 @@
 #' be kept and mong it only the 4 columns specified in \code{coord.col}.
 #' @return a list of two objects (data, a data.tibble containing all the data
 #' grouped by file; info, a data.tibble with the file and matching groups)
-#' @examples
-#' readFiles.TS(datapath=datapath)
-#' readFiles.TS(datapath=datapath,ind.catch=1:51)
-#' readFiles.TS(datapath=datapath,ind.catch=c(1,9,14,5,80))
-#' readFiles.TS(datapath=datapath,,NA.code="-9999")
-#' readFiles.TS(datapath=datapath,,NA.code=c("-9999","-1"))
+#' @importFrom utils read.table
 #' @export
 readFiles.TS=function (datapath,
                        ind.catch = NULL,

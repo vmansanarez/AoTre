@@ -16,15 +16,18 @@ GeneralMannKendall.wrap(
 
 \item{level}{numeric, between 0 and 1, level of the test (default: 0.1).}
 
-\item{dep.option}{dependency option, option for handling temporal dependence (default 'INDE' for independence).}
+\item{dep.option}{dependency option, option for handling temporal dependence
+(default 'INDE' for independence).}
 
-\item{DoDetrending}{logical, only used for dep.option == 'LTP' (default: TRUE).}
+\item{DoDetrending}{logical, only used for when dep.option == 'LTP'
+(default: TRUE).}
 }
 \value{
-a dataframe, with the different statistics and values of interest of the test.
+a dataframe, with the different statistics and values of interest of
+the test.
 }
 \description{
-Apply the GeneralMannKendall function from BFunk package to the serie X.
+Apply the generalMannKendall function to the serie X.
 }
 \examples{
 GeneralMannKendall.wrap(X=1:100)

@@ -8,20 +8,33 @@ Estimate.stats(
   data.extract,
   funct.stat = GeneralMannKendall.wrap,
   list.stats = NULL,
+  do.pval_FDR = FALSE,
+  level.FDR = 0.1,
   ...
 )
 }
 \arguments{
-\item{data.extract}{data.tibble (tbl). IMPORTANT: results from function extract.Var()'.}
+\item{data.extract}{data.tibble (tbl). IMPORTANT: results from function
+'extract.Var()'.}
 
-\item{funct.stat}{function, function to aggregate on data.extract. Apply by default the function
-'GeneralMannKendall.wrap' to perform a Mann-Kendall trend analysis on data.extract.}
+\item{funct.stat}{function, function to aggregate on data.extract. Apply by
+default the function 'GeneralMannKendall.wrap' to perform a Mann-Kendall
+trend analysis on data.extract.}
 
-\item{list.stats}{vector, optional argument, information to add to the returned results.}
+\item{list.stats}{vector, optional argument, information to add to the
+returned results.}
+
+\item{do.pval_FDR}{logical, TRUE if the p-value accounts for the field
+significance using the false detection rate (FDR) approach.}
+
+\item{level.FDR}{numeric between 0 and 1, level used in the FDR approach}
+
+\item{...}{other arguments passed to function \code{funct.stat}.}
 }
 \value{
 a dataframe, with the different results of the trend analysis.
 }
 \description{
-Applies a staticitcal trend analysis to an extracted variable, result from the function 'extract.Var()'
+Applies a staticitcal trend analysis to an extracted variable,
+result from the function 'extract.Var()'
 }
