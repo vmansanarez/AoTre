@@ -211,6 +211,7 @@ fieldSignificance_FDR <- function(pvals,level=0.1){
 #' lines(res$DATA$time,res$TREND*res$DATA$time)
 #' @references Renard, B., et al. (2008), Regional methods for trend detection: Assessing field significance
 #'             and regional consistency, Water Resour. Res., doi:10.1029/2007WR006268
+#' @importFrom stats pchisq
 #' @export
 regionalTrend <- function(X,level=0.1){
   # Create output list and initialize it
