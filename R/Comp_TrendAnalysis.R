@@ -1,7 +1,7 @@
 
 
 ################################################################################
-#' @title Mann-Kendall trend analysis
+#' @title Mann-Kendall trend analysis 
 #' @description Apply the generalMannKendall function to the serie X.
 #' @param X data (vector). IMPORTANT: it assumes that X is regularly-spaced.
 #' @param level numeric, between 0 and 1, level of the test (default: 0.1).
