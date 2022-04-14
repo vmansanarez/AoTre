@@ -333,6 +333,65 @@ extract.Var=function(data.station = NULL # data already prepared.
     ### No grouping
     data.all.grTime=dplyr::select(data.all,values)
   }else if(timestep %in% timeStep.allowed[1:3]){
+    
+    if(!Settings_changeStart$change){
+      # dates were not aggregated before
+      if(timestep == "year"){
+        ## Change datetime into year
+        data.extract.step2=dplyr::mutate(.data = data.all,
+                                         datetime=lubridate::year(datetime))
+        
+        ## group variable by all except column "values"
+        data.all.grTime=dplyr::group_by_at(.tbl=data.extract.step2
+                                           ,.vars = dplyr::setdiff(names(data.extract.step2),
+                                                                   "values"))
+        
+      }else if(timestep == "month"){
+        
+        ### Refined period selection
+        if(!is.null(period)){
+          data.all = dplyr::filter(.data = data.all,
+                                   datetime  <= period.date[2])
+          data.all = dplyr::filter(.data = data.all,
+                                   datetime  >= period.date[1])
+        }
+        ## Change datetime into year
+        data.extract.step2=dplyr::mutate(.data = data.all,
+                                         datetime=lubridate::month(datetime))
+        
+        ## group variable by all except column "values"
+        data.all.grTime=dplyr::group_by_at(.tbl=data.extract.step2
+                                           ,.vars = dplyr::setdiff(names(data.all.grTime),
+                                                                   "values"))
+        
+      }else if(timestep == "year-month"){
+        
+        ### Refined period selection
+        if(!is.null(period)){
+          data.all = dplyr::filter(.data = data.all,
+                                   datetime  <= period.date[2])
+          data.all = dplyr::filter(.data = data.all,
+                                   datetime  >= period.date[1])
+        }
+        ### Test 1200% faster
+        data.extract.step2=dplyr::mutate(.data = data.all
+                                         ,datetime.year=lubridate::year(datetime)
+                                         ,datetime.month=lubridate::month(datetime)
+                                         ,datetime = paste(datetime.year,datetime.month,sep="-"))
+        
+        data.extract.step2=dplyr::select(.data=data.extract.step2
+                                         ,names(data.all))
+        
+        ## group variable by all except column "values"
+        data.all.grTime=dplyr::group_by_at(.tbl=data.extract.step2
+                                           ,.vars = dplyr::setdiff(names(data.extract.step2),
+                                                                   "values"))
+        
+      }else{
+        
+      }
+    }
+    
     ## Already dealt with above
     if(!exists("data.all.grTime")){
       data.all.grTime=data.all
@@ -424,3 +483,4 @@ change.startFunct=function(opt_time
   }
   return(res.change)
 }
+
