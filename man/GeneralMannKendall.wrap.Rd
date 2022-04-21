@@ -2,7 +2,7 @@
 % Please edit documentation in R/Comp_TrendAnalysis.R
 \name{GeneralMannKendall.wrap}
 \alias{GeneralMannKendall.wrap}
-\title{Mann-Kendall trend analysis}
+\title{Mann-Kendall trend analysis  commit 1}
 \usage{
 GeneralMannKendall.wrap(
   X,
@@ -31,5 +31,5 @@ Apply the generalMannKendall function to the serie X.
 }
 \examples{
 GeneralMannKendall.wrap(X=1:100)
-GeneralMannKendall.wrap(X=rep(1,100))
+GeneralMannKendall.wrap(X=rep(1,100)) commit 2
 }

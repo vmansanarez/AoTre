@@ -34,7 +34,9 @@ value of the time series.}
 perform. Available:
 \enumerate{
 \item 'year', variable is extracted for each year (default option)
-\item 'month', variable is extracted for each months
+\item 'year-month', variable is extracted for each months and years
+\item 'month', variable is extracted for each months between the years
+\item 'station', variable is extracted for each group
 \item 'None', no aggregation on time is considered
 }
 Any other value for this argument will return an error message.}
@@ -65,7 +67,7 @@ to a provided classification of groups.
 \details{
 If there is a group of Date, argument 'pos.datetime" needs to be
 provided. If not, it is assume that there are no Date object in the provided
-groups.
+groups. test
 }
 \examples{
 data(StationQ_3catch)
