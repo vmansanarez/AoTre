@@ -67,9 +67,10 @@ to a provided classification of groups.
 \details{
 If there is a group of Date, argument 'pos.datetime" needs to be
 provided. If not, it is assume that there are no Date object in the provided
-groups. test
+groups.
 }
 \examples{
+library(StatsAnalysisTrend)
 data(StationQ_3catch)
 extract.Var(data.station=StationQ_3catch,pos.datetime=1)
 extract.Var(data.station=StationQ_3catch,funct=min,pos.datetime=1)

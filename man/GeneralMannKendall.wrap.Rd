@@ -31,5 +31,5 @@ Apply the generalMannKendall function to the serie X.
 }
 \examples{
 GeneralMannKendall.wrap(X=1:100)
-GeneralMannKendall.wrap(X=rep(1,100)) commit 2
+GeneralMannKendall.wrap(X=rep(1,100))
 }

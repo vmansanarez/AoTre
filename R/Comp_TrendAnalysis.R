@@ -13,7 +13,7 @@
 #' the test.
 #' @examples
 #' GeneralMannKendall.wrap(X=1:100)
-#' GeneralMannKendall.wrap(X=rep(1,100)) commit 2
+#' GeneralMannKendall.wrap(X=rep(1,100))
 #' @export
 GeneralMannKendall.wrap=function(X,level=0.1
                                  ,dep.option='INDE'

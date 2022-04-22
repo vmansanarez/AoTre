@@ -36,13 +36,14 @@
 #' data grouped by file;; info, a data.tibble with the file and matching groups)
 #' @details If there is a group of Date, argument 'pos.datetime" needs to be
 #' provided. If not, it is assume that there are no Date object in the provided
-#' groups. test
+#' groups.
 #' @examples
+#' library(StatsAnalysisTrend)
 #' data(StationQ_3catch)
 #' extract.Var(data.station=StationQ_3catch,pos.datetime=1)
 #' extract.Var(data.station=StationQ_3catch,funct=min,pos.datetime=1)
-#' @importFrom lubridate %m+%
-#' @export
+#' @importFrom lubridate %m+% %m-%
+#' @export extract.Var
 extract.Var=function(data.station = NULL # data already prepared.
                      ,data.group = NULL # Data with the different groups.
                      ,data.values = NULL # Data with the values for each
@@ -59,9 +60,9 @@ extract.Var=function(data.station = NULL # data already prepared.
   ############################################
   ############################################
 
-  #'* ------------------------------------------------------------------------ *
-  #'* ---- ---- ---- ---- ---- STEP 0: Argument check ---- ---- ---- ---- ---- *
-  #'* ------------------------------------------------------------------------ *
+  #* ------------------------------------------------------------------------ *
+  #* ---- ---- ---- ---- ---- STEP 0: Argument check ---- ---- ---- ---- ---- *
+  #* ------------------------------------------------------------------------ *
   ### Check argument of the function
   # WORK IN PROGRESS
   ############################################
@@ -158,9 +159,9 @@ extract.Var=function(data.station = NULL # data already prepared.
   }
 
 
-  #'* ------------------------------------------------------------------------ *
-  #'* ---- ---- ---- ---- --- STEP 1: Preprocess Dates ---- ---- ---- ---- --- *
-  #'* ------------------------------------------------------------------------ *
+  #* ------------------------------------------------------------------------ *
+  #* ---- ---- ---- ---- --- STEP 1: Preprocess Dates ---- ---- ---- ---- --- *
+  #* ------------------------------------------------------------------------ *
 
   ############################################
   ### STEP 1.1 Select period, first time: rough selection to cute the data
@@ -215,6 +216,54 @@ extract.Var=function(data.station = NULL # data already prepared.
   ## year-month --> time is grouped by year*month, so 12*years groups
   ## station --> no work on time: data are group by station (for example, smoothing of values)
   ## none --> data are not grouped.
+
+
+  change.startFunct=function(opt_time
+                             ,val_start
+                             ,opt_TimeNeeded){
+    res.change=list(change=FALSE,StartParam=NULL)
+    if(opt_time %in% opt_TimeNeeded){
+      ### options that changing start period makes sense
+      if(opt_time==opt_TimeNeeded[1]){
+        ## Data are aggregated by Years
+        if(val_start != "01-01"){
+          ### Catch month and day of new start of the year
+          val_start.month=as.numeric(substr(val_start,1,2))
+          val_start.day=as.numeric(substr(val_start,4,5))
+          ### Save it in returned result
+          res.change$change=TRUE
+          res.change$StartParam=c(val_start.month,val_start.day)
+        }else{
+          res.change$StartParam=c(01,01)
+        }
+      }else if(opt_time==opt_TimeNeeded[2]){
+        ## Data are aggregated by Year*month
+        if(val_start != "01"){
+          ### Catch day of new start of the year
+          val_start.day=as.numeric(val_start)
+          ### Save it in returned result
+          res.change$change=TRUE
+          res.change$StartParam=val_start.day
+        }else{
+          res.change$StartParam=1
+        }
+      }else{
+        ## Data are aggregated by month
+        if(val_start != "01"){
+          ### Catch day of new start of the year
+          val_start.day=as.numeric(val_start)
+          ### Save it in returned result
+          res.change$change=TRUE
+          res.change$StartParam=val_start.day
+        }else{
+          res.change$StartParam=1
+        }
+      }
+    }
+    return(res.change)
+  }
+
+
 
   Settings_changeStart=change.startFunct(opt_time=timestep
                                          ,val_start=per.start
@@ -333,21 +382,21 @@ extract.Var=function(data.station = NULL # data already prepared.
     ### No grouping
     data.all.grTime=dplyr::select(data.all,values)
   }else if(timestep %in% timeStep.allowed[1:3]){
-    
+
     if(!Settings_changeStart$change){
       # dates were not aggregated before
       if(timestep == "year"){
         ## Change datetime into year
         data.extract.step2=dplyr::mutate(.data = data.all,
                                          datetime=lubridate::year(datetime))
-        
+
         ## group variable by all except column "values"
         data.all.grTime=dplyr::group_by_at(.tbl=data.extract.step2
                                            ,.vars = dplyr::setdiff(names(data.extract.step2),
                                                                    "values"))
-        
+
       }else if(timestep == "month"){
-        
+
         ### Refined period selection
         if(!is.null(period)){
           data.all = dplyr::filter(.data = data.all,
@@ -358,14 +407,14 @@ extract.Var=function(data.station = NULL # data already prepared.
         ## Change datetime into year
         data.extract.step2=dplyr::mutate(.data = data.all,
                                          datetime=lubridate::month(datetime))
-        
+
         ## group variable by all except column "values"
         data.all.grTime=dplyr::group_by_at(.tbl=data.extract.step2
                                            ,.vars = dplyr::setdiff(names(data.all.grTime),
                                                                    "values"))
-        
+
       }else if(timestep == "year-month"){
-        
+
         ### Refined period selection
         if(!is.null(period)){
           data.all = dplyr::filter(.data = data.all,
@@ -378,20 +427,20 @@ extract.Var=function(data.station = NULL # data already prepared.
                                          ,datetime.year=lubridate::year(datetime)
                                          ,datetime.month=lubridate::month(datetime)
                                          ,datetime = paste(datetime.year,datetime.month,sep="-"))
-        
+
         data.extract.step2=dplyr::select(.data=data.extract.step2
                                          ,names(data.all))
-        
+
         ## group variable by all except column "values"
         data.all.grTime=dplyr::group_by_at(.tbl=data.extract.step2
                                            ,.vars = dplyr::setdiff(names(data.extract.step2),
                                                                    "values"))
-        
+
       }else{
-        
+
       }
     }
-    
+
     ## Already dealt with above
     if(!exists("data.all.grTime")){
       data.all.grTime=data.all
@@ -401,9 +450,9 @@ extract.Var=function(data.station = NULL # data already prepared.
     stop("extract.Var: wrong timestep argument value")
   }
 
-  #'* ------------------------------------------------------------------------ *
-  #'* ---- ---- ---- ---- ---- - STEP 2: GROUP DATA ---- ---- ---- ---- ---- - *
-  #'* ------------------------------------------------------------------------ *
+  #* ------------------------------------------------------------------------ *
+  #* ---- ---- ---- ---- ---- - STEP 2: GROUP DATA ---- ---- ---- ---- ---- - *
+  #* ------------------------------------------------------------------------ *
 
   ### Group data by all columns except column of values (setdiff function remove
   # the column 'values' from the list of names of the columns to group)
@@ -411,18 +460,18 @@ extract.Var=function(data.station = NULL # data already prepared.
                                          .vars = dplyr::setdiff(names(data.all.grTime),
                                                                 "values"))
 
-  #'* ------------------------------------------------------------------------ *
-  #'* ---- ---- ---- ---- STEP 3: COMPUTE NA % per groups. ---- ---- ---- ---- *
-  #'* ------------------------------------------------------------------------ *
+  #* ------------------------------------------------------------------------ *
+  #* ---- ---- ---- ---- STEP 3: COMPUTE NA % per groups. ---- ---- ---- ---- *
+  #* ------------------------------------------------------------------------ *
 
   count_NA=function(x){
     res=sum(is.na(x))/length(x)
     return(res)
   }
 
-  #'* ------------------------------------------------------------------------ *
-  #'* ---- ---- ---- ---- --- STEP 4: EXTRACT VARIABLE ---- ---- ---- ---- --- *
-  #'* ------------------------------------------------------------------------ *
+  #* ------------------------------------------------------------------------ *
+  #* ---- ---- ---- ---- --- STEP 4: EXTRACT VARIABLE ---- ---- ---- ---- --- *
+  #* ------------------------------------------------------------------------ *
 
   ### Apply function of interest + compute percent NA
   data.extract=dplyr::summarise_all(.tbl = data.extract.step1
@@ -439,48 +488,4 @@ extract.Var=function(data.station = NULL # data already prepared.
 
 }
 
-change.startFunct=function(opt_time
-                           ,val_start
-                           ,opt_TimeNeeded){
-  res.change=list(change=FALSE,StartParam=NULL)
-  if(opt_time %in% opt_TimeNeeded){
-    ### options that changing start period makes sense
-    if(opt_time==opt_TimeNeeded[1]){
-      ## Data are aggregated by Years
-      if(val_start != "01-01"){
-        ### Catch month and day of new start of the year
-        val_start.month=as.numeric(substr(val_start,1,2))
-        val_start.day=as.numeric(substr(val_start,4,5))
-        ### Save it in returned result
-        res.change$change=TRUE
-        res.change$StartParam=c(val_start.month,val_start.day)
-      }else{
-        res.change$StartParam=c(01,01)
-      }
-    }else if(opt_time==opt_TimeNeeded[2]){
-      ## Data are aggregated by Year*month
-      if(val_start != "01"){
-        ### Catch day of new start of the year
-        val_start.day=as.numeric(val_start)
-        ### Save it in returned result
-        res.change$change=TRUE
-        res.change$StartParam=val_start.day
-      }else{
-        res.change$StartParam=1
-      }
-    }else{
-      ## Data are aggregated by month
-      if(val_start != "01"){
-        ### Catch day of new start of the year
-        val_start.day=as.numeric(val_start)
-        ### Save it in returned result
-        res.change$change=TRUE
-        res.change$StartParam=val_start.day
-      }else{
-        res.change$StartParam=1
-      }
-    }
-  }
-  return(res.change)
-}
 
