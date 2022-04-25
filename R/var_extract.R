@@ -473,13 +473,22 @@ extract.Var=function(data.station = NULL # data already prepared.
   #* ---- ---- ---- ---- --- STEP 4: EXTRACT VARIABLE ---- ---- ---- ---- --- *
   #* ------------------------------------------------------------------------ *
 
+  #### wrap of provided function
+  funct_wrap=function(x_vect){
+    funct(x_vect,...)
+  }
   ### Apply function of interest + compute percent NA
-  data.extract=dplyr::summarise_all(.tbl = data.extract.step1
-                                    ,.funs = list(values=funct,NA.percent=count_NA))
+  data.extract.var=dplyr::summarise_all(.tbl = data.extract.step1
+                                        ,.funs = funct_wrap)
+
+  data.extract.NA=dplyr::summarise_all(.tbl = data.extract.step1
+                                       ,.funs = count_NA)
+
+  data.extract.var$Na.percent=data.extract.NA$values
 
   ### Replace -Inf and Inf values by NA. Some primitive function (like max())
   # return -Inf (or Inf for min function) when all data are NA.
-  data.extractFinal = dplyr::mutate(.data = data.extract,
+  data.extractFinal = dplyr::mutate(.data = data.extract.var,
                                     values = replace(values, is.infinite(values), NA))
 
 
