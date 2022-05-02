@@ -62,6 +62,17 @@ Estimate.stats=function(data.extract
   }else{
     group.names=dplyr::setdiff(colnames(data.extract),"values")
   }
+  ### Check if column of NAs percent is there
+
+  if("Na.percent" %in% colnames(data.extract)){
+    ### Remove Na.percent column
+    data.extract = dplyr::select(.data = data.extract,
+                                 .vars=dplyr::setdiff(colnames(data.extract)
+                                                      ,c("Na.percent")))
+    colnames(data.extract) = dplyr::setdiff(colnames(data.extract)
+                                            ,c("Na.percent"))
+  }
+
   ### Group data accordingly to group.names
   data.Y.extract=dplyr::group_by_at(.tbl=data.extract,.vars = group.names)
 

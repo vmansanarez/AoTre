@@ -486,6 +486,9 @@ extract.Var=function(data.station = NULL # data already prepared.
 
   data.extract.var$Na.percent=data.extract.NA$values
 
+  data.extract.var= dplyr::group_by_at(.tbl=data.all.grTime,
+                                       .vars = dplyr::setdiff(names(data.all.grTime),
+                                                              c("values","Na.percent")))
   ### Replace -Inf and Inf values by NA. Some primitive function (like max())
   # return -Inf (or Inf for min function) when all data are NA.
   data.extractFinal = dplyr::mutate(.data = data.extract.var,
