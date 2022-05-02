@@ -52,6 +52,18 @@ Estimate.stats=function(data.extract
                         ,level.FDR=0.1
                         ,...){
 
+  ### Check if column of NAs percent is there
+
+  if("Na.percent" %in% colnames(data.extract)){
+    ### Remove Na.percent column
+    group.name.tmp = dplyr::setdiff(colnames(data.extract)
+                                    ,c("Na.percent"))
+    data.extract = dplyr::select(.data = data.extract,
+                                 .vars=dplyr::setdiff(colnames(data.extract)
+                                                      ,c("Na.percent")))
+    colnames(data.extract) = group.name.tmp
+  }
+
   ### [WARNING]: aggregation to be modified to account for more groups
   ### Aggregation of function 'funct.stat' on data value column from
   # data.extract.
@@ -61,16 +73,6 @@ Estimate.stats=function(data.extract
     group.names=dplyr::setdiff(colnames(data.extract),c("datetime","values"))
   }else{
     group.names=dplyr::setdiff(colnames(data.extract),"values")
-  }
-  ### Check if column of NAs percent is there
-
-  if("Na.percent" %in% colnames(data.extract)){
-    ### Remove Na.percent column
-    data.extract = dplyr::select(.data = data.extract,
-                                 .vars=dplyr::setdiff(colnames(data.extract)
-                                                      ,c("Na.percent")))
-    colnames(data.extract) = dplyr::setdiff(colnames(data.extract)
-                                            ,c("Na.percent"))
   }
 
   ### Group data accordingly to group.names
