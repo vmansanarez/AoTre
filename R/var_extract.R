@@ -386,6 +386,17 @@ extract.Var=function(data.station = NULL # data already prepared.
     if(!Settings_changeStart$change){
       # dates were not aggregated before
       if(timestep == "year"){
+
+
+        ### Refined period selection
+        if(!is.null(period)){
+          data.all = dplyr::filter(.data = data.all,
+                                   datetime  <= period.date[2])
+          data.all = dplyr::filter(.data = data.all,
+                                   datetime  >= period.date[1])
+        }
+
+
         ## Change datetime into year
         data.extract.step2=dplyr::mutate(.data = data.all,
                                          datetime=lubridate::year(datetime))
